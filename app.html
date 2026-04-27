@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal CD Grupo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root { --navy: #050a1f; --navy-2: #0a1130; --navy-3: #111a42; --gold: #d4a537; --gold-light: #e9c46a; --cream: #f5eedd; --cream-dim: #a8a29e; }
+  * { -webkit-font-smoothing: antialiased; }
+  body { font-family: 'Inter', sans-serif; background: var(--navy); color: var(--cream); overflow-x: hidden; }
+  .font-display { font-family: 'Fraunces', serif; }
+  main { background: var(--navy); }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { background: rgba(212,165,55,0.2); border-radius: 4px; }
+  .nav-item { display:flex; align-items:center; gap:12px; padding:12px 16px; border-radius:12px; color: var(--cream-dim); transition: all .25s; cursor:pointer; font-weight:500; font-size:14px; }
+  .nav-item:hover { color: var(--cream); background: rgba(255,255,255,0.04); }
+  .nav-item.active { color: var(--navy); background: linear-gradient(135deg, var(--gold-light), var(--gold)); }
+  .card { background: linear-gradient(180deg, var(--navy-2), var(--navy)); border: 1px solid rgba(212,165,55,0.08); border-radius: 20px; transition: all .4s; }
+  .card:hover { border-color: rgba(212,165,55,0.25); transform: translateY(-2px); box-shadow: 0 30px 60px -30px rgba(212,165,55,0.2); }
+  .badge-gold { background: linear-gradient(135deg, #fde68a, #d4a537 50%, #a07821); color: var(--navy); font-weight: 700; }
+  .badge-esm { background: linear-gradient(135deg, #34d399, #10b981 50%, #047857); color: var(--navy); font-weight: 700; }
+  .badge-film { background: linear-gradient(135deg, #e9d5ff, #a855f7 50%, #7e22ce); color: white; font-weight: 700; }
+  .gold-text { background: linear-gradient(135deg, var(--gold-light), var(--gold)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .tab-content { animation: slideIn .5s cubic-bezier(.22,1,.36,1); }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  .stagger > * { opacity: 0; animation: rise .7s cubic-bezier(.22,1,.36,1) forwards; }
+  .stagger > *:nth-child(1) { animation-delay: .05s; } .stagger > *:nth-child(2) { animation-delay: .12s; }
+  .stagger > *:nth-child(3) { animation-delay: .19s; } .stagger > *:nth-child(4) { animation-delay: .26s; }
+  .stagger > *:nth-child(5) { animation-delay: .33s; } .stagger > *:nth-child(6) { animation-delay: .40s; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+  .hero-gradient { background: linear-gradient(135deg, var(--navy-2) 0%, var(--navy) 60%, var(--navy-3) 100%); }
+  .tl-dot { position: relative; }
+  .tl-dot::before { content: ''; position: absolute; left: 7px; top: 28px; bottom: -20px; width: 1px; background: linear-gradient(180deg, rgba(212,165,55,0.5), transparent); }
+  .tl-dot:last-child::before { display: none; }
+  @media (max-width: 1023px) {
+    .sidebar { transform: translateX(-100%); transition: transform .3s; }
+    .sidebar.open { transform: translateX(0); }
+    .sidebar-overlay { display: none; }
+    .sidebar-overlay.open { display: block; }
+  }
+  .btn-gold { background: linear-gradient(135deg, var(--gold-light), var(--gold)); color: var(--navy); font-weight: 600; transition: all .3s; }
+  .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 10px 30px -10px rgba(212,165,55,.5); }
+  .pulse-dot { animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .spinner { animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .video-modal { background: rgba(0,0,0,0.92); backdrop-filter: blur(8px); }
+  .hero-title { opacity: 0; animation: heroRise 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards; }
+  @keyframes heroRise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+  .hero-sub { opacity: 0; animation: heroRise 1s cubic-bezier(0.22, 1, 0.36, 1) 0.6s forwards; }
+  .hero-cta { opacity: 0; animation: heroRise 1s cubic-bezier(0.22, 1, 0.36, 1) 0.9s forwards; }
+</style>
+</head>
+<body class="min-h-screen flex">
+
+<!-- Loading inicial -->
+<div id="loading-screen" class="fixed inset-0 z-[100] flex items-center justify-center" style="background: var(--navy);">
+  <div class="text-center">
+    <svg class="spinner w-12 h-12 mx-auto mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gold);"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+    <div class="text-[10px] uppercase tracking-[0.3em] gold-text font-semibold">Carregando portal</div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<aside id="sidebar" class="sidebar fixed lg:static inset-y-0 left-0 w-72 z-50 flex flex-col border-r" style="background: rgba(10,17,48,0.98); border-color: rgba(212,165,55,0.25);">
+  <div class="p-6 flex items-center gap-3 border-b" style="border-color: rgba(212,165,55,0.15);">
+    <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, var(--gold-light), var(--gold));">
+      <span class="font-display font-bold text-lg" style="color: var(--navy);">cd</span>
+    </div>
+    <div>
+      <div class="font-display text-lg leading-none">CD Grupo</div>
+      <div class="text-[10px] uppercase tracking-[0.25em] mt-1 gold-text font-semibold">Portal</div>
+    </div>
+    <button onclick="toggleSidebar()" class="lg:hidden ml-auto" style="color: var(--cream-dim);">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+    <div class="text-[10px] uppercase tracking-[0.25em] px-3 py-2 font-semibold" style="color: var(--cream-dim);">Menu</div>
+    <div data-tab="home" class="nav-item active">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      Início
+    </div>
+    <div data-tab="networking" class="nav-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/></svg>
+      Networking
+    </div>
+    <div data-tab="conteudos" class="nav-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Conteúdos
+    </div>
+    <div data-tab="acervo" class="nav-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      Acervo
+    </div>
+    <div data-tab="mural" class="nav-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      Mural
+    </div>
+    <div data-tab="perfil" class="nav-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg>
+      Meu Perfil
+    </div>
+    <div id="link-admin" class="hidden mt-4 pt-4 border-t" style="border-color: rgba(212,165,55,0.15);">
+      <div class="text-[10px] uppercase tracking-[0.25em] px-3 py-2 font-semibold" style="color: var(--gold);">Admin</div>
+      <a href="admin.html" class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Painel Admin
+      </a>
+    </div>
+  </nav>
+
+  <div class="p-4 border-t" style="border-color: rgba(212,165,55,0.15);">
+    <div class="card p-4 flex items-center gap-3">
+      <div id="user-avatar" class="w-11 h-11 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-800 flex items-center justify-center font-display font-semibold">--</div>
+      <div class="flex-1 min-w-0">
+        <div id="user-nome" class="text-sm font-semibold truncate">Carregando...</div>
+        <div id="user-nivel" class="text-[10px] uppercase tracking-widest mt-0.5 flex items-center gap-1.5"></div>
+      </div>
+      <button id="btn-sair" class="opacity-60 hover:opacity-100 transition" title="Sair">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+    </div>
+  </div>
+</aside>
+<div id="sidebar-overlay" class="sidebar-overlay fixed inset-0 bg-black/60 backdrop-blur-sm z-40" onclick="toggleSidebar()"></div>
+
+<!-- MAIN -->
+<main class="flex-1 min-w-0 flex flex-col">
+  <div class="lg:hidden sticky top-0 z-30 backdrop-blur-xl border-b p-4 flex items-center gap-3" style="background: rgba(5,10,31,0.95); border-color: rgba(212,165,55,0.25);">
+    <button onclick="toggleSidebar()" style="color: var(--gold);">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="font-display text-base gold-text">CD Grupo</div>
+  </div>
+
+  <div class="flex-1 p-6 md:p-10 overflow-x-hidden">
+
+    <!-- HOME -->
+    <section id="tab-home" class="tab-content">
+      <div class="hero-gradient rounded-3xl p-8 md:p-16 mb-10 border relative overflow-hidden" style="border-color: rgba(212,165,55,0.2);">
+        <div class="absolute -top-20 -right-20 w-64 h-64 rounded-full blur-3xl opacity-[0.08] pointer-events-none" style="background: var(--gold);"></div>
+        <div class="relative">
+          <div class="text-[11px] uppercase tracking-[0.3em] mb-4 font-semibold gold-text hero-sub">Bem-vindo de volta, <span id="hero-nome">você</span></div>
+          <h1 class="hero-title font-display text-4xl md:text-7xl font-light leading-[0.95] mb-6 max-w-3xl">
+            A mentoria não é <em class="italic gold-text">onde</em> você chega.<br>
+            É <em class="italic">como</em> você <span class="gold-text">joga</span>.
+          </h1>
+          <p class="hero-sub text-base md:text-lg max-w-xl mb-8" style="color: var(--cream-dim);">
+            Seu espaço privativo no CD Grupo. Conecte-se com outros mentorados, consuma conteúdo novo, revise aulas anteriores e acompanhe sua evolução.
+          </p>
+          <div class="hero-cta flex flex-wrap gap-3">
+            <button onclick="goTo('conteudos')" class="btn-gold px-6 py-3 rounded-full text-sm flex items-center gap-2">
+              Ver novidades da semana
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </button>
+            <button onclick="goTo('networking')" class="px-6 py-3 rounded-full text-sm border transition-all hover:bg-white/5" style="border-color: rgba(245,238,221,0.2); color: var(--cream);">
+              Networking
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-10 stagger">
+        <div onclick="goTo('conteudos')" class="card p-6 cursor-pointer">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(212,165,55,0.15);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gold);"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </div>
+          </div>
+          <div class="font-display text-3xl font-light mb-1" id="stat-conteudos">0</div>
+          <div class="text-sm" style="color: var(--cream-dim);">Conteúdos disponíveis</div>
+        </div>
+        <div onclick="goTo('acervo')" class="card p-6 cursor-pointer">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(212,165,55,0.15);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gold);"><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            </div>
+          </div>
+          <div class="font-display text-3xl font-light mb-1" id="stat-acervo">0</div>
+          <div class="text-sm" style="color: var(--cream-dim);">Acervo de aulas</div>
+        </div>
+        <div onclick="goTo('networking')" class="card p-6 cursor-pointer">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(212,165,55,0.15);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gold);"><circle cx="9" cy="7" r="4"/><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/></svg>
+            </div>
+          </div>
+          <div class="font-display text-3xl font-light mb-1" id="stat-mentorados">0</div>
+          <div class="text-sm" style="color: var(--cream-dim);">Mentorados</div>
+        </div>
+        <div onclick="goTo('mural')" class="card p-6 cursor-pointer">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(220,38,38,0.15);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #ef4444;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/></svg>
+            </div>
+          </div>
+          <div class="font-display text-3xl font-light mb-1" id="stat-mural">0</div>
+          <div class="text-sm" style="color: var(--cream-dim);">Avisos no mural</div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="font-display text-2xl md:text-3xl font-light">Últimas novidades</h2>
+        <button onclick="goTo('conteudos')" class="text-sm flex items-center gap-1 hover:gap-2 transition-all" style="color: var(--gold);">Ver tudo <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5" id="home-latest">
+        <div class="text-sm col-span-3 text-center py-8" style="color: var(--cream-dim);">Nenhum conteúdo ainda. Em breve.</div>
+      </div>
+    </section>
+
+    <!-- NETWORKING -->
+    <section id="tab-networking" class="tab-content hidden">
+      <div class="mb-8">
+        <div class="text-[11px] uppercase tracking-[0.3em] gold-text font-semibold mb-3">Networking</div>
+        <h1 class="font-display text-4xl md:text-6xl font-light leading-tight mb-4">Conecte-se com <em class="italic gold-text">quem joga junto</em></h1>
+        <p class="max-w-xl text-sm md:text-base" style="color: var(--cream-dim);">Toque em qualquer mentorado pra chamar no WhatsApp ou seguir no Instagram.</p>
+      </div>
+      <div class="flex gap-6 mb-8">
+        <div class="flex items-center gap-3"><div class="font-display text-3xl font-light" id="net-count">0</div><div class="text-[10px] uppercase tracking-widest" style="color: var(--cream-dim);">Mentorados<br>conectados</div></div>
+      </div>
+      <div class="rounded-full flex items-center gap-3 px-5 py-3 mb-6" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gold);"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="net-search" type="text" placeholder="Buscar por nome ou nicho…" class="bg-transparent flex-1 text-sm focus:outline-none" style="color: var(--cream);">
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 stagger" id="net-grid">
+        <div class="text-sm col-span-3 text-center py-8" style="color: var(--cream-dim);">Nenhum mentorado ainda.</div>
+      </div>
+    </section>
+
+    <!-- CONTEÚDOS -->
+    <section id="tab-conteudos" class="tab-content hidden">
+      <div class="mb-8">
+        <div class="text-[11px] uppercase tracking-[0.3em] gold-text font-semibold mb-3">Conteúdos</div>
+        <h1 class="font-display text-4xl md:text-6xl font-light leading-tight mb-4">Novidades <em class="italic gold-text">pra essa semana</em></h1>
+      </div>
+      <div class="flex flex-wrap gap-2 mb-8" id="cont-filters">
+        <button data-cat="todas" class="cat-btn px-4 py-1.5 rounded-full text-xs bg-white/10 border" style="border-color: rgba(212,165,55,0.3);">Todas</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 stagger" id="cont-grid">
+        <div class="text-sm col-span-3 text-center py-8" style="color: var(--cream-dim);">Nenhum conteúdo ainda.</div>
+      </div>
+    </section>
+
+    <!-- ACERVO -->
+    <section id="tab-acervo" class="tab-content hidden">
+      <div class="mb-8">
+        <div class="text-[11px] uppercase tracking-[0.3em] gold-text font-semibold mb-3">Acervo</div>
+        <h1 class="font-display text-4xl md:text-6xl font-light leading-tight mb-4">Todo o <em class="italic gold-text">conhecimento</em> do CD Grupo</h1>
+        <p class="max-w-xl text-sm md:text-base" style="color: var(--cream-dim);">Lives antigas, aulas, workshops e eventos.</p>
+      </div>
+      <div class="rounded-full flex items-center gap-3 px-5 py-3 mb-8" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gold);"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="acervo-search" type="text" placeholder="Buscar por título, tema ou data..." class="bg-transparent flex-1 text-sm focus:outline-none" style="color: var(--cream);">
+      </div>
+      <div class="space-y-3 stagger" id="acervo-list">
+        <div class="text-sm text-center py-8" style="color: var(--cream-dim);">Nenhuma aula no acervo ainda.</div>
+      </div>
+    </section>
+
+    <!-- MURAL -->
+    <section id="tab-mural" class="tab-content hidden">
+      <div class="mb-8">
+        <div class="text-[11px] uppercase tracking-[0.3em] gold-text font-semibold mb-3">Mural</div>
+        <h1 class="font-display text-4xl md:text-6xl font-light leading-tight mb-4">O que importa <em class="italic gold-text">saber agora</em></h1>
+      </div>
+      <div class="max-w-3xl space-y-5 stagger" id="mural-list">
+        <div class="text-sm text-center py-8" style="color: var(--cream-dim);">Nenhum aviso no mural.</div>
+      </div>
+    </section>
+
+    <!-- PERFIL -->
+    <section id="tab-perfil" class="tab-content hidden">
+      <div class="mb-8">
+        <div class="text-[11px] uppercase tracking-[0.3em] gold-text font-semibold mb-3">Sua jornada</div>
+        <h1 class="font-display text-4xl md:text-6xl font-light leading-tight">Evolução <em class="italic gold-text" id="perfil-nome">você</em></h1>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="card p-8 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-40 h-40 rounded-full blur-3xl opacity-20" style="background: var(--gold);"></div>
+          <div class="relative">
+            <div id="perfil-avatar" class="w-24 h-24 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-800 flex items-center justify-center font-display text-3xl mb-5">--</div>
+            <span id="perfil-badge" class="badge-esm text-[9px] uppercase tracking-wider px-2 py-0.5 rounded font-bold">--</span>
+            <h2 class="font-display text-3xl font-light mt-2 mb-1" id="perfil-nome-full">Carregando...</h2>
+            <div class="text-[10px] uppercase tracking-widest mb-6" id="perfil-nicho" style="color: var(--cream-dim);">--</div>
+            <div class="space-y-4 pt-6 border-t" style="border-color: rgba(212,165,55,0.15);">
+              <div class="flex justify-between items-center">
+                <div class="text-[10px] uppercase tracking-widest" style="color: var(--cream-dim);">Entrou em</div>
+                <div class="font-display text-sm" id="perfil-entrou">--</div>
+              </div>
+              <div class="flex justify-between items-center">
+                <div class="text-[10px] uppercase tracking-widest" style="color: var(--cream-dim);">Status</div>
+                <div class="flex items-center gap-2 text-sm" id="perfil-status">--</div>
+              </div>
+              <div class="flex justify-between items-center">
+                <div class="text-[10px] uppercase tracking-widest" style="color: var(--cream-dim);">Próximo venc.</div>
+                <div class="font-display text-sm" id="perfil-venc">--</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="lg:col-span-2">
+          <h3 class="font-display text-2xl mb-2">Linha do tempo</h3>
+          <p class="text-sm mb-8" style="color: var(--cream-dim);">Os marcos da sua trajetória no CD Grupo.</p>
+          <div class="space-y-7" id="timeline">
+            <div class="text-sm" style="color: var(--cream-dim);">Sua jornada começa agora. Em breve marcos serão registrados.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- VIDEO MODAL -->
+<div id="video-modal" class="hidden fixed inset-0 z-[60] video-modal flex items-center justify-center p-4">
+  <button id="video-close" class="absolute top-6 right-6 text-white/80 hover:text-white p-2 rounded-full bg-white/10 backdrop-blur z-10">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+  </button>
+  <div class="w-full max-w-5xl">
+    <div class="aspect-video rounded-2xl overflow-hidden" style="background: black;">
+      <iframe id="video-iframe" class="w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <div class="mt-4 text-center">
+      <div id="video-titulo" class="font-display text-xl"></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, collection, getDocs, query, orderBy, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBth5GU8NsDj1-9s5-y2IomFCuMvxPZb3w",
+  authDomain: "portal-cd-grupo.firebaseapp.com",
+  projectId: "portal-cd-grupo",
+  storageBucket: "portal-cd-grupo.firebasestorage.app",
+  messagingSenderId: "145153980911",
+  appId: "1:145153980911:web:ed797fa1795d65d90f9e1a"
+};
+
+const WHATSAPP_CS = "5521988784033";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+let userData = null;
+let isAdmin = false;
+let userNivel = "gold"; // gold, esmeralda, filmmaker
+let allMentorados = [];
+let allConteudos = [];
+let allAcervo = [];
+let allMural = [];
+let allMarcos = [];
+
+const NIVEIS_HIERARQUIA = { gold: 1, esmeralda: 2, filmmaker: 3 };
+
+const $ = (id) => document.getElementById(id);
+const cleanPhone = (p) => (p || "").replace(/\D/g, "");
+const cleanInsta = (i) => (i || "").replace("@", "").replace(/https?:\/\/(www\.)?instagram\.com\//, "").replace("/", "");
+
+// Auth check
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "index.html";
+    return;
+  }
+  currentUser = user;
+
+  // Verifica se é admin
+  const adminDoc = await getDoc(doc(db, "admins", user.uid));
+  if (adminDoc.exists()) {
+    isAdmin = true;
+    userData = adminDoc.data();
+    userNivel = "filmmaker"; // admin vê tudo
+    $("link-admin").classList.remove("hidden");
+  } else {
+    // Mentorado
+    const mentDoc = await getDoc(doc(db, "mentorados", user.uid));
+    if (!mentDoc.exists()) {
+      alert("Conta não encontrada. Entre em contato com o time.");
+      signOut(auth);
+      return;
+    }
+    userData = mentDoc.data();
+    userNivel = userData.nivel || "gold";
+
+    // Verifica status
+    const status = userData.status || "ativo";
+    if (status !== "ativo") {
+      alert("Seu acesso foi suspenso. Fale com o time.");
+      signOut(auth);
+      window.location.href = "index.html";
+      return;
+    }
+    if (userData.vencimento) {
+      const venc = new Date(userData.vencimento);
+      if (venc < new Date()) {
+        alert("Sua mentoria expirou. Fale com o time pra renovar.");
+        signOut(auth);
+        window.location.href = "index.html";
+        return;
+      }
+    }
+  }
+
+  // Atualiza UI
+  atualizarHeader();
+  // Carrega dados
+  await carregarDados();
+  // Esconde loading
+  $("loading-screen").style.display = "none";
+});
+
+function atualizarHeader() {
+  const nome = userData.nome || "Mentorado";
+  const inicial = nome.charAt(0).toUpperCase() + (nome.split(" ")[1]?.charAt(0).toUpperCase() || "");
+  $("user-avatar").textContent = inicial;
+  $("user-nome").textContent = nome;
+  $("hero-nome").textContent = nome.split(" ")[0];
+
+  const nivelInfo = {
+    gold: { texto: "Gold", cor: "#fbbf24" },
+    esmeralda: { texto: "Esmeralda", cor: "#34d399" },
+    filmmaker: { texto: "Filmmaker", cor: "#a855f7" }
+  };
+  const ni = nivelInfo[userNivel] || nivelInfo.gold;
+  $("user-nivel").innerHTML = `<span class="w-1.5 h-1.5 rounded-full pulse-dot" style="background: ${ni.cor};"></span><span style="color: ${ni.cor};">${isAdmin ? "Admin" : ni.texto}</span>`;
+}
+
+// Verifica se usuário pode ver conteúdo de determinado nível
+function podeVer(nivelMinimo) {
+  if (isAdmin) return true;
+  return NIVEIS_HIERARQUIA[userNivel] >= NIVEIS_HIERARQUIA[nivelMinimo || "gold"];
+}
+
+async function carregarDados() {
+  await Promise.all([
+    carregarMentorados(),
+    carregarConteudos(),
+    carregarAcervo(),
+    carregarMural(),
+    carregarMarcos()
+  ]);
+  atualizarStats();
+  renderHomeLatest();
+  renderNetworking();
+  renderConteudos();
+  renderAcervo();
+  renderMural();
+  renderPerfil();
+}
+
+async function carregarMentorados() {
+  try {
+    const snap = await getDocs(collection(db, "mentorados"));
+    allMentorados = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .filter(m => (m.status || "ativo") === "ativo");
+    // Filtra por nível: Gold só vê Gold, Esmeralda+ veem todos
+    if (!isAdmin && userNivel === "gold") {
+      allMentorados = allMentorados.filter(m => m.nivel === "gold");
+    }
+  } catch (e) { console.error("Erro mentorados:", e); }
+}
+
+async function carregarConteudos() {
+  try {
+    const snap = await getDocs(collection(db, "conteudos"));
+    allConteudos = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .filter(c => podeVer(c.nivelMinimo))
+      .sort((a, b) => (b.criadoEm?.seconds || 0) - (a.criadoEm?.seconds || 0));
+  } catch (e) { console.error("Erro conteúdos:", e); }
+}
+
+async function carregarAcervo() {
+  try {
+    const snap = await getDocs(collection(db, "acervo"));
+    allAcervo = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .filter(a => podeVer(a.nivelMinimo))
+      .sort((a, b) => (b.data?.seconds || 0) - (a.data?.seconds || 0));
+  } catch (e) { console.error("Erro acervo:", e); }
+}
+
+async function carregarMural() {
+  try {
+    const snap = await getDocs(collection(db, "mural"));
+    allMural = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .filter(m => podeVer(m.nivelMinimo))
+      .sort((a, b) => (b.criadoEm?.seconds || 0) - (a.criadoEm?.seconds || 0));
+  } catch (e) { console.error("Erro mural:", e); }
+}
+
+async function carregarMarcos() {
+  if (isAdmin) return; // admin não tem timeline pessoal
+  try {
+    const snap = await getDocs(query(collection(db, "marcos"), where("mentoradoId", "==", currentUser.uid)));
+    allMarcos = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => (a.data?.seconds || 0) - (b.data?.seconds || 0));
+  } catch (e) { console.error("Erro marcos:", e); }
+}
+
+function atualizarStats() {
+  $("stat-conteudos").textContent = allConteudos.length;
+  $("stat-acervo").textContent = allAcervo.length;
+  $("stat-mentorados").textContent = allMentorados.length;
+  $("stat-mural").textContent = allMural.length;
+  $("net-count").textContent = allMentorados.length;
+}
+
+function getYouTubeEmbed(url) {
+  if (!url) return "";
+  const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([^&?\/\s]{11})/);
+  return m ? `https://www.youtube.com/embed/${m[1]}?rel=0&autoplay=1` : "";
+}
+
+function getYouTubeThumb(url) {
+  if (!url) return "";
+  const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([^&?\/\s]{11})/);
+  return m ? `https://img.youtube.com/vi/${m[1]}/maxresdefault.jpg` : "";
+}
+
+function abrirVideo(url, titulo) {
+  const embed = getYouTubeEmbed(url);
+  if (!embed) { alert("Link de vídeo inválido"); return; }
+  $("video-iframe").src = embed;
+  $("video-titulo").textContent = titulo;
+  $("video-modal").classList.remove("hidden");
+}
+
+$("video-close").addEventListener("click", () => {
+  $("video-modal").classList.add("hidden");
+  $("video-iframe").src = "";
+});
+$("video-modal").addEventListener("click", (e) => {
+  if (e.target.id === "video-modal") {
+    $("video-modal").classList.add("hidden");
+    $("video-iframe").src = "";
+  }
+});
+
+function renderHomeLatest() {
+  const cont = $("home-latest");
+  if (allConteudos.length === 0) {
+    cont.innerHTML = `<div class="text-sm col-span-3 text-center py-8" style="color: var(--cream-dim);">Nenhum conteúdo ainda. Em breve.</div>`;
+    return;
+  }
+  const latest = allConteudos.slice(0, 3);
+  cont.innerHTML = latest.map(c => `
+    <article class="card overflow-hidden cursor-pointer group" onclick="window.abrirVideo('${c.url}', '${(c.titulo||'').replace(/'/g,"\\'")}')">
+      <div class="aspect-video relative" style="background: linear-gradient(135deg, var(--navy-3), #000);">
+        ${c.url ? `<img src="${getYouTubeThumb(c.url)}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition" onerror="this.style.display='none'">` : ''}
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="w-14 h-14 rounded-full bg-white/10 backdrop-blur border border-white/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="translate-x-0.5"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        ${c.categoria ? `<div class="absolute top-3 left-3"><span class="px-2 py-0.5 rounded text-[9px] uppercase tracking-widest bg-black/70 backdrop-blur font-semibold" style="color: var(--gold);">${c.categoria}</span></div>` : ''}
+      </div>
+      <div class="p-5">
+        <h4 class="font-display font-semibold text-lg leading-tight mb-1">${c.titulo || 'Sem título'}</h4>
+        ${c.descricao ? `<div class="text-xs mt-2" style="color: var(--cream-dim);">${c.descricao.substring(0,80)}${c.descricao.length>80?'...':''}</div>` : ''}
+      </div>
+    </article>
+  `).join("");
+}
+
+function renderNetworking() {
+  const grid = $("net-grid");
+  const search = $("net-search").value.toLowerCase();
+  const filtered = allMentorados.filter(m =>
+    !search || m.nome?.toLowerCase().includes(search) || m.nicho?.toLowerCase().includes(search)
+  );
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="text-sm col-span-3 text-center py-8" style="color: var(--cream-dim);">Nenhum mentorado encontrado.</div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(m => {
+    const inicial = (m.nome || "?").charAt(0).toUpperCase() + ((m.nome||"").split(" ")[1]?.charAt(0).toUpperCase() || "");
+    const nivelTxt = m.nivel === "esmeralda" ? "Esmeralda" : m.nivel === "filmmaker" ? "Filmmaker" : "Gold";
+    const badge = m.nivel === "esmeralda" ? "esm" : m.nivel === "filmmaker" ? "film" : "gold";
+    return `
+      <article class="card p-6">
+        <div class="flex items-start gap-4 mb-5">
+          <div class="w-14 h-14 rounded-full bg-gradient-to-br from-blue-400 to-blue-800 flex items-center justify-center font-display text-lg font-semibold text-white shrink-0">${inicial}</div>
+          <div class="flex-1 min-w-0">
+            <span class="badge-${badge} text-[9px] uppercase tracking-wider px-2 py-0.5 rounded font-bold">${nivelTxt}</span>
+            <h3 class="font-display text-lg font-semibold leading-tight mt-1">${m.nome}</h3>
+            <div class="text-[10px] uppercase tracking-widest mt-1" style="color: var(--cream-dim);">${m.nicho || ''}</div>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          ${m.whatsapp ? `<a href="https://wa.me/${cleanPhone(m.whatsapp)}" target="_blank" rel="noopener" class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium hover:opacity-90" style="background: #10b981; color: white;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>WhatsApp</a>` : ''}
+          ${m.instagram ? `<a href="https://instagram.com/${cleanInsta(m.instagram)}" target="_blank" rel="noopener" class="w-11 h-11 flex items-center justify-center rounded-xl border hover:border-white/30" style="border-color: rgba(255,255,255,0.1);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="20" x="2" y="2" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><circle cx="17.5" cy="6.5" r=".5" fill="currentColor"/></svg></a>` : ''}
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+$("net-search").addEventListener("input", renderNetworking);
+
+function renderConteudos() {
+  const grid = $("cont-grid");
+  const filtersDiv = $("cont-filters");
+
+  // Categorias únicas
+  const cats = [...new Set(allConteudos.map(c => c.categoria).filter(Boolean))];
+  filtersDiv.innerHTML = `<button data-cat="todas" class="cat-btn px-4 py-1.5 rounded-full text-xs bg-white/10 border" style="border-color: rgba(212,165,55,0.3);">Todas</button>` +
+    cats.map(c => `<button data-cat="${c}" class="cat-btn px-4 py-1.5 rounded-full text-xs border border-white/10 hover:bg-white/5">${c}</button>`).join("");
+
+  let activeCat = "todas";
+  filtersDiv.querySelectorAll(".cat-btn").forEach(b => {
+    b.addEventListener("click", () => {
+      filtersDiv.querySelectorAll(".cat-btn").forEach(x => {
+        x.className = "cat-btn px-4 py-1.5 rounded-full text-xs border border-white/10 hover:bg-white/5";
+      });
+      b.className = "cat-btn px-4 py-1.5 rounded-full text-xs bg-white/10 border";
+      b.style.borderColor = "rgba(212,165,55,0.3)";
+      activeCat = b.dataset.cat;
+      doRender();
+    });
+  });
+
+  function doRender() {
+    const filtered = activeCat === "todas" ? allConteudos : allConteudos.filter(c => c.categoria === activeCat);
+    if (filtered.length === 0) {
+      grid.innerHTML = `<div class="text-sm col-span-3 text-center py-8" style="color: var(--cream-dim);">Nenhum conteúdo nessa categoria.</div>`;
+      return;
+    }
+    grid.innerHTML = filtered.map(c => `
+      <article class="card overflow-hidden cursor-pointer group" onclick="window.abrirVideo('${c.url}', '${(c.titulo||'').replace(/'/g,"\\'")}')">
+        <div class="aspect-video relative" style="background: linear-gradient(135deg, var(--navy-3), #000);">
+          ${c.url ? `<img src="${getYouTubeThumb(c.url)}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition" onerror="this.style.display='none'">` : ''}
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="w-14 h-14 rounded-full bg-white/10 backdrop-blur border border-white/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="translate-x-0.5"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+          </div>
+          ${c.categoria ? `<div class="absolute top-3 left-3"><span class="px-2 py-0.5 rounded text-[9px] uppercase tracking-widest bg-black/70 backdrop-blur font-semibold" style="color: var(--gold);">${c.categoria}</span></div>` : ''}
+        </div>
+        <div class="p-5">
+          <h4 class="font-display font-semibold text-lg leading-tight mb-1">${c.titulo || 'Sem título'}</h4>
+          ${c.descricao ? `<div class="text-xs mt-2" style="color: var(--cream-dim);">${c.descricao.substring(0,100)}${c.descricao.length>100?'...':''}</div>` : ''}
+        </div>
+      </article>
+    `).join("");
+  }
+  doRender();
+}
+
+function renderAcervo() {
+  const list = $("acervo-list");
+  const search = $("acervo-search").value.toLowerCase();
+  const filtered = allAcervo.filter(a =>
+    !search || a.titulo?.toLowerCase().includes(search) || a.tag?.toLowerCase().includes(search)
+  );
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="text-sm text-center py-8" style="color: var(--cream-dim);">Nenhuma aula encontrada.</div>`;
+    return;
+  }
+  list.innerHTML = filtered.map(a => `
+    <article class="card p-5 flex items-center gap-5 cursor-pointer group" onclick="window.abrirVideo('${a.url}', '${(a.titulo||'').replace(/'/g,"\\'")}')">
+      <div class="w-14 h-14 rounded-xl flex items-center justify-center shrink-0" style="background: linear-gradient(135deg, rgba(212,165,55,0.15), rgba(26,37,86,0.3));">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="color: var(--gold);"><path d="M8 5v14l11-7z"/></svg>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-3 mb-1 text-[10px] uppercase tracking-widest flex-wrap" style="color: var(--cream-dim);">
+          ${a.tag ? `<span class="gold-text font-semibold">${a.tag}</span><span>·</span>` : ''}
+          ${a.dataTexto ? `<span>${a.dataTexto}</span>` : ''}
+          ${a.duracao ? `<span>·</span><span>${a.duracao}</span>` : ''}
+        </div>
+        <h4 class="font-display text-lg font-light">${a.titulo}</h4>
+      </div>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 opacity-40 group-hover:opacity-100 transition" style="color: var(--gold);"><path d="m9 18 6-6-6-6"/></svg>
+    </article>
+  `).join("");
+}
+
+$("acervo-search").addEventListener("input", renderAcervo);
+
+function renderMural() {
+  const list = $("mural-list");
+  if (allMural.length === 0) {
+    list.innerHTML = `<div class="text-sm text-center py-8" style="color: var(--cream-dim);">Nenhum aviso no mural.</div>`;
+    return;
+  }
+  list.innerHTML = allMural.map(m => {
+    const cat = m.categoria || 'Aviso';
+    const cores = { 'ao vivo': '#ef4444', 'novidade': 'var(--gold)', 'evento': '#10b981', 'aviso': '#3b82f6' };
+    const cor = cores[cat.toLowerCase()] || '#3b82f6';
+    const txtClaro = cat.toLowerCase() === 'ao vivo';
+    return `
+      <article class="card p-6">
+        <div class="flex items-center gap-3 mb-4 text-[10px] uppercase tracking-widest">
+          <span class="px-2 py-0.5 rounded font-bold" style="background: ${cor}; color: ${txtClaro?'white':'var(--navy)'};">${cat}</span>
+          ${m.dataTexto ? `<span style="color: var(--cream-dim);">${m.dataTexto}</span>` : ''}
+        </div>
+        <h3 class="font-display text-xl md:text-2xl font-light leading-tight mb-3">${m.titulo}</h3>
+        ${m.descricao ? `<p class="text-sm" style="color: var(--cream-dim);">${m.descricao}</p>` : ''}
+      </article>
+    `;
+  }).join("");
+}
+
+function renderPerfil() {
+  if (isAdmin) {
+    $("tab-perfil").innerHTML = `
+      <div class="text-center py-20">
+        <div class="font-display text-3xl mb-4">Você é admin</div>
+        <p style="color: var(--cream-dim);">Admins não têm perfil de mentorado. Acesse o <a href="admin.html" class="gold-text font-semibold">painel admin</a>.</p>
+      </div>
+    `;
+    return;
+  }
+
+  const nome = userData.nome || "Mentorado";
+  const inicial = nome.charAt(0).toUpperCase() + (nome.split(" ")[1]?.charAt(0).toUpperCase() || "");
+  $("perfil-nome").textContent = nome.split(" ")[0];
+  $("perfil-nome-full").textContent = nome;
+  $("perfil-avatar").textContent = inicial;
+  $("perfil-nicho").textContent = userData.nicho || "—";
+
+  const nivelTxt = userNivel === "esmeralda" ? "Esmeralda" : userNivel === "filmmaker" ? "Filmmaker" : "Gold";
+  const badgeClass = userNivel === "esmeralda" ? "badge-esm" : userNivel === "filmmaker" ? "badge-film" : "badge-gold";
+  const badgeEl = $("perfil-badge");
+  badgeEl.className = `${badgeClass} text-[9px] uppercase tracking-wider px-2 py-0.5 rounded font-bold`;
+  badgeEl.textContent = nivelTxt;
+
+  $("perfil-entrou").textContent = userData.entrouEm || "—";
+  $("perfil-status").innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot"></span>Ativo`;
+  $("perfil-venc").textContent = userData.vencimento ? new Date(userData.vencimento).toLocaleDateString('pt-BR') : "—";
+
+  // Timeline
+  const tl = $("timeline");
+  if (allMarcos.length === 0) {
+    tl.innerHTML = `<div class="text-sm" style="color: var(--cream-dim);">Sua jornada começa agora. Em breve marcos serão registrados.</div>`;
+  } else {
+    tl.innerHTML = allMarcos.map(m => `
+      <div class="tl-dot flex gap-5">
+        <div class="w-4 h-4 rounded-full shrink-0 mt-1.5" style="background: var(--gold); box-shadow: 0 0 0 4px rgba(212,165,55,0.15);"></div>
+        <div class="flex-1 pb-2">
+          <div class="text-[10px] uppercase tracking-widest mb-1 font-semibold gold-text">${m.dataTexto || ''}</div>
+          <h4 class="font-display text-xl font-semibold mb-1">${m.titulo}</h4>
+          ${m.descricao ? `<p class="text-sm" style="color: var(--cream-dim);">${m.descricao}</p>` : ''}
+        </div>
+      </div>
+    `).join("");
+  }
+}
+
+// Tab switcher
+function goTo(tab) {
+  document.querySelectorAll(".nav-item").forEach(n => n.classList.toggle("active", n.dataset.tab === tab));
+  document.querySelectorAll('[id^="tab-"]').forEach(s => s.classList.add("hidden"));
+  $("tab-"+tab).classList.remove("hidden");
+  if (window.innerWidth < 1024) toggleSidebar();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+window.goTo = goTo;
+window.abrirVideo = abrirVideo;
+document.querySelectorAll(".nav-item").forEach(n => {
+  if (n.dataset.tab) n.addEventListener("click", () => goTo(n.dataset.tab));
+});
+
+function toggleSidebar() {
+  $("sidebar").classList.toggle("open");
+  $("sidebar-overlay").classList.toggle("open");
+}
+window.toggleSidebar = toggleSidebar;
+
+// Sair
+$("btn-sair").addEventListener("click", async () => {
+  if (confirm("Deseja sair?")) {
+    await signOut(auth);
+    window.location.href = "index.html";
+  }
+});
+</script>
+
+</body>
+</html>

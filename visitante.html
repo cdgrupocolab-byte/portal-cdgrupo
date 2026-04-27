@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal CD Grupo — Visite por dentro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --navy: #050a1f; --navy-2: #0a1130; --navy-3: #111a42;
+    --gold: #d4a537; --gold-light: #e9c46a;
+    --cream: #f5eedd; --cream-dim: #a8a29e;
+  }
+  * { -webkit-font-smoothing: antialiased; }
+  body { font-family: 'Inter', sans-serif; background: var(--navy); color: var(--cream); }
+  .font-display { font-family: 'Fraunces', serif; }
+  main { background: var(--navy); }
+  .gold-text { background: linear-gradient(135deg, var(--gold-light), var(--gold)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .btn-gold { background: linear-gradient(135deg, var(--gold-light), var(--gold)); color: var(--navy); font-weight: 600; transition: all .3s; }
+  .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 12px 30px -10px rgba(212,165,55,.5); }
+
+  .nav-item { display:flex; align-items:center; gap:12px; padding:12px 16px; border-radius:12px; color: var(--cream-dim); transition: all .25s; cursor:pointer; font-weight:500; font-size:14px; }
+  .nav-item:hover { color: var(--cream); background: rgba(255,255,255,0.04); }
+  .nav-item.active { color: var(--navy); background: linear-gradient(135deg, var(--gold-light), var(--gold)); }
+
+  .card { background: linear-gradient(180deg, var(--navy-2), var(--navy)); border: 1px solid rgba(212,165,55,0.08); border-radius: 16px; transition: all .4s; }
+
+  .badge-gold { background: linear-gradient(135deg, #fde68a, #d4a537 50%, #a07821); color: var(--navy); font-weight: 700; }
+  .badge-esm { background: linear-gradient(135deg, #34d399, #10b981 50%, #047857); color: var(--navy); font-weight: 700; }
+  .badge-film { background: linear-gradient(135deg, #e9d5ff, #a855f7 50%, #7e22ce); color: white; font-weight: 700; }
+
+  /* === MODO VISITANTE: efeitos de bloqueio === */
+  .locked {
+    position: relative;
+    overflow: hidden;
+  }
+  .locked-content {
+    filter: blur(6px) brightness(0.5);
+    user-select: none;
+    pointer-events: none;
+  }
+  .locked-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    backdrop-filter: blur(4px);
+    background: linear-gradient(135deg, rgba(5,10,31,0.6), rgba(5,10,31,0.4));
+    transition: all .3s;
+    cursor: pointer;
+  }
+  .locked-overlay:hover {
+    background: linear-gradient(135deg, rgba(212,165,55,0.15), rgba(5,10,31,0.5));
+  }
+  .lock-icon-bg {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    box-shadow: 0 8px 30px -8px rgba(212,165,55,0.5);
+    color: var(--navy);
+  }
+  .lock-text {
+    text-align: center;
+    color: var(--cream);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-weight: 600;
+  }
+
+  /* Banner topo */
+  .visitor-banner {
+    background: linear-gradient(90deg, rgba(212,165,55,0.15), rgba(212,165,55,0.05), rgba(212,165,55,0.15));
+    border-bottom: 1px solid rgba(212,165,55,0.3);
+  }
+
+  /* CTA flutuante */
+  .floating-cta {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 60;
+    box-shadow: 0 20px 50px -10px rgba(212,165,55,0.4);
+  }
+
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { background: rgba(212,165,55,0.2); border-radius: 4px; }
+
+  .tab-content { animation: fade .5s cubic-bezier(.22,1,.36,1); }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  .stagger > * { opacity: 0; animation: rise .7s cubic-bezier(.22,1,.36,1) forwards; }
+  .stagger > *:nth-child(1) { animation-delay: .05s; }
+  .stagger > *:nth-child(2) { animation-delay: .12s; }
+  .stagger > *:nth-child(3) { animation-delay: .19s; }
+  .stagger > *:nth-child(4) { animation-delay: .26s; }
+  .stagger > *:nth-child(5) { animation-delay: .33s; }
+  .stagger > *:nth-child(6) { animation-delay: .40s; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+
+  .hero-gradient { background: linear-gradient(135deg, var(--navy-2) 0%, var(--navy) 60%, var(--navy-3) 100%); }
+
+  @media (max-width: 1023px) {
+    .sidebar { transform: translateX(-100%); transition: transform .3s; }
+    .sidebar.open { transform: translateX(0); }
+    .sidebar-overlay { display: none; }
+    .sidebar-overlay.open { display: block; }
+  }
+
+  /* Pulse */
+  .pulse-dot { animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  /* Banner pulse */
+  .banner-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  .banner-shine::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(212,165,55,0.2), transparent);
+    animation: shine 3s infinite;
+  }
+  @keyframes shine { to { left: 200%; } }
+</style>
+</head>
+<body class="min-h-screen flex">
+
+<!-- ============ SIDEBAR ============ -->
+<aside id="sidebar" class="sidebar fixed lg:static inset-y-0 left-0 w-72 z-50 flex flex-col border-r" style="background: rgba(10,17,48,0.98); border-color: rgba(212,165,55,0.25);">
+  <div class="p-6 flex items-center gap-3 border-b" style="border-color: rgba(212,165,55,0.15);">
+    <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, var(--gold-light), var(--gold));">
+      <span class="font-display font-bold text-lg" style="color: var(--navy);">cd</span>
+    </div>
+    <div>
+      <div class="font-display text-lg leading-none">CD Grupo</div>
+      <div class="text-[10px] uppercase tracking-[0.25em] mt-1 gold-text font-semibold">Modo visitante</div>
+    </div>
+    <button onclick="toggleSidebar()" class="lg:hidden ml-auto" style="color: var(--cream-dim);">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+    <div class="text-[10px] uppercase tracking-[0.25em] px-3 py-2 font-semibold" style="color: var(--cream-dim);">Você está vendo</div>
+    <div data-tab="home" class="nav-item active">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      Início
+    </div>
+    <div data-tab="networking" class="nav-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/></svg>
+      Networking
+    </div>
+    <div data-tab="conteudos" class="nav-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Conteúdos
+    </div>
+    <div data-tab="acervo" class="nav-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      Acervo
+    </div>
+    <div data-tab="mural" class="nav-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      Mural
+    </div>
+    <div data-tab="perfil" class="nav-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg>
+      Meu Perfil
+    </div>
+  </nav>
+
+  <div class="p-4 border-t space-y-3" style="border-color: rgba(212,165,55,0.15);">
+    <div class="card p-4 text-center" style="border-color: rgba(212,165,55,0.3);">
+      <div class="lock-icon-bg mx-auto mb-3" style="width: 40px; height: 40px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <div class="text-xs font-semibold mb-1">Quer entrar de verdade?</div>
+      <div class="text-[10px] mb-3" style="color: var(--cream-dim);">Acesso liberado pra mentorados</div>
+      <a href="https://wa.me/5521988784033" class="btn-gold w-full block py-2 rounded-lg text-xs">Falar com o time</a>
+    </div>
+  </div>
+</aside>
+<div id="sidebar-overlay" class="sidebar-overlay fixed inset-0 bg-black/60 backdrop-blur-sm z-40" onclick="toggleSidebar()"></div>
+
+<!-- ============ MAIN ============ -->
+<main class="flex-1 min-w-0 flex flex-col">
+
+  <!-- Banner visitante topo -->
+  <div class="visitor-banner banner-shine sticky top-0 z-30 backdrop-blur-xl px-6 py-3 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <button onclick="toggleSidebar()" class="lg:hidden" style="color: var(--gold);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full pulse-dot" style="background: var(--gold);"></span>
+        <span class="text-[11px] uppercase tracking-widest font-semibold gold-text">Modo visitante · prévia</span>
+      </div>
+    </div>
+    <a href="https://wa.me/5521988784033" class="btn-gold px-4 py-1.5 rounded-full text-xs flex items-center gap-2 whitespace-nowrap">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <span class="hidden sm:inline">Quero entrar</span>
+      <span class="sm:hidden">Entrar</span>
+    </a>
+  </div>
+
+  <div class="flex-1 p-6 md:p-10 overflow-x-hidden">
+
+    <!-- ========= HOME ========= -->
+    <section id="tab-home" class="tab-content">
+      <div class="hero-gradient rounded-3xl p-8 md:p-16 mb-10 border relative overflow-hidden" style="border-color: rgba(212,165,55,0.2);">
+        <div class="absolute -top-20 -right-20 w-64 h-64 rounded-full blur-3xl opacity-[0.08] pointer-events-none" style="background: var(--gold);"></div>
+        <div class="relative">
+          <div class="text-[11px] uppercase tracking-[0.3em] mb-4 font-semibold gold-text">Bem-vindo, visitante</div>
+          <h1 class="font-display text-4xl md:text-7xl font-light leading-[0.95] mb-6 max-w-3xl">
+            Esse é o portal <em class="italic gold-text">privativo</em><br>
+            do CD Grupo.
+          </h1>
+          <p class="text-base md:text-lg max-w-xl mb-8" style="color: var(--cream-dim);">
+            Você tá vendo uma <strong style="color: var(--cream);">prévia real</strong> do que nossos mentorados acessam todos os dias. Networking, conteúdos exclusivos, acervo de aulas e muito mais. Pra usar de verdade, é preciso ser mentorado.
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <a href="https://wa.me/5521988784033" class="btn-gold px-6 py-3 rounded-full text-sm flex items-center gap-2">
+              Quero entrar pro CD Grupo
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </a>
+            <button onclick="goTo('conteudos')" class="px-6 py-3 rounded-full text-sm border transition-all hover:bg-white/5" style="border-color: rgba(245,238,221,0.2); color: var(--cream);">
+              Continuar explorando
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats reais (não bloqueadas, são prova social) -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+        <div class="card p-6">
+          <div class="text-[10px] uppercase tracking-widest mb-2" style="color: var(--cream-dim);">Mentorados ativos</div>
+          <div class="font-display text-3xl font-light gold-text">47</div>
+        </div>
+        <div class="card p-6">
+          <div class="text-[10px] uppercase tracking-widest mb-2" style="color: var(--cream-dim);">Horas de conteúdo</div>
+          <div class="font-display text-3xl font-light gold-text">142h</div>
+        </div>
+        <div class="card p-6">
+          <div class="text-[10px] uppercase tracking-widest mb-2" style="color: var(--cream-dim);">Nichos diferentes</div>
+          <div class="font-display text-3xl font-light gold-text">12</div>
+        </div>
+        <div class="card p-6">
+          <div class="text-[10px] uppercase tracking-widest mb-2" style="color: var(--cream-dim);">Conteúdos publicados</div>
+          <div class="font-display text-3xl font-light gold-text">24</div>
+        </div>
+      </div>
+
+      <!-- Últimas novidades bloqueadas -->
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="font-display text-2xl md:text-3xl font-light">Últimas novidades</h2>
+        <span class="text-[10px] uppercase tracking-widest" style="color: var(--cream-dim);">Disponível para mentorados</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5" id="home-latest"></div>
+    </section>
+
+    <!-- ========= NETWORKING ========= -->
+    <section id="tab-networking" class="tab-content hidden">
+      <div class="mb-8">
+        <div class="text-[11px] uppercase tracking-[0.3em] gold-text font-semibold mb-3">Networking</div>
+        <h1 class="font-display text-4xl md:text-6xl font-light leading-tight mb-4">Conecte-se com <em class="italic gold-text">quem joga junto</em></h1>
+        <p class="max-w-xl text-sm md:text-base" style="color: var(--cream-dim);">São <strong style="color: var(--cream);">47 mentorados</strong> em 12 nichos diferentes. Como mentorado você fala direto com qualquer um deles no WhatsApp ou Instagram.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 stagger" id="net-grid"></div>
+    </section>
+
+    <!-- ========= CONTEÚDOS ========= -->
+    <section id="tab-conteudos" class="tab-content hidden">
+      <div class="mb-8">
+        <div class="text-[11px] uppercase tracking-[0.3em] gold-text font-semibold mb-3">Conteúdos</div>
+        <h1 class="font-display text-4xl md:text-6xl font-light leading-tight mb-4">Aulas, frameworks e <em class="italic gold-text">scripts quentes</em></h1>
+        <p class="max-w-xl text-sm md:text-base" style="color: var(--cream-dim);">Conteúdos novos toda semana, gravados pelo Marcello e curados pelo time. Mentorados assistem direto pelo portal.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 stagger" id="cont-grid"></div>
+    </section>
+
+    <!-- ========= ACERVO ========= -->
+    <section id="tab-acervo" class="tab-content hidden">
+      <div class="mb-8">
+        <div class="text-[11px] uppercase tracking-[0.3em] gold-text font-semibold mb-3">Acervo</div>
+        <h1 class="font-display text-4xl md:text-6xl font-light leading-tight mb-4">142 horas de <em class="italic gold-text">conhecimento aplicado</em></h1>
+        <p class="max-w-xl text-sm md:text-base" style="color: var(--cream-dim);">Lives antigas, aulas, workshops e eventos. Tudo organizado pra mentorado voltar quando precisar.</p>
+      </div>
+
+      <div class="space-y-3 stagger" id="acervo-list"></div>
+    </section>
+
+    <!-- ========= MURAL ========= -->
+    <section id="tab-mural" class="tab-content hidden">
+      <div class="mb-8">
+        <div class="text-[11px] uppercase tracking-[0.3em] gold-text font-semibold mb-3">Mural</div>
+        <h1 class="font-display text-4xl md:text-6xl font-light leading-tight mb-4">O que importa <em class="italic gold-text">saber agora</em></h1>
+      </div>
+
+      <div class="max-w-3xl space-y-5 stagger" id="mural-list"></div>
+    </section>
+
+    <!-- ========= PERFIL ========= -->
+    <section id="tab-perfil" class="tab-content hidden">
+      <div class="mb-8">
+        <div class="text-[11px] uppercase tracking-[0.3em] gold-text font-semibold mb-3">Sua jornada</div>
+        <h1 class="font-display text-4xl md:text-6xl font-light leading-tight">Cada mentorado tem a <em class="italic gold-text">própria timeline</em></h1>
+        <p class="max-w-xl text-sm md:text-base mt-4" style="color: var(--cream-dim);">Os marcos da sua jornada — primeiro Reel viral, primeira venda, upgrade de nível — ficam registrados pra você acompanhar a evolução.</p>
+      </div>
+
+      <div class="locked card p-8" style="height: 500px;">
+        <div class="locked-content opacity-30">
+          <div class="w-24 h-24 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-800 flex items-center justify-center font-display text-3xl mb-5">??</div>
+          <h2 class="font-display text-3xl font-light mb-1">Mentorado XX</h2>
+          <div class="text-[10px] uppercase tracking-widest mb-6" style="color: var(--cream-dim);">Nicho · Cidade</div>
+          <div class="space-y-4 mt-8">
+            <div class="h-4 bg-white/5 rounded w-2/3"></div>
+            <div class="h-4 bg-white/5 rounded w-1/2"></div>
+            <div class="h-4 bg-white/5 rounded w-3/4"></div>
+            <div class="h-4 bg-white/5 rounded w-2/5"></div>
+          </div>
+        </div>
+        <div class="locked-overlay" onclick="window.location.href='https://wa.me/5521988784033'">
+          <div class="lock-icon-bg">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div class="lock-text">Perfil disponível pra mentorados</div>
+          <div class="text-xs max-w-xs text-center mt-2" style="color: var(--cream-dim);">Cada mentorado tem timeline única com seus marcos e conquistas</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- CTA flutuante mobile -->
+<a href="https://wa.me/5521988784033" class="floating-cta lg:hidden btn-gold px-5 py-3 rounded-full text-xs flex items-center gap-2">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  Falar com o time
+</a>
+
+<script>
+// === DADOS DE EXEMPLO ===
+const mentorados = [
+  {n:'Marcello Cabral',i:'MC',c:'from-amber-400 to-amber-700',nv:'esm',nc:'Restaurante + Digital'},
+  {n:'Larissa Gomes',i:'LG',c:'from-rose-400 to-rose-700',nv:'film',nc:'Estética Avançada'},
+  {n:'Rafael Costa',i:'RC',c:'from-blue-400 to-blue-800',nv:'gold',nc:'Imobiliário'},
+  {n:'Ana Maciel',i:'AM',c:'from-violet-400 to-violet-800',nv:'esm',nc:'Infoprodutos'},
+  {n:'Bruno Ferraz',i:'BF',c:'from-teal-400 to-teal-800',nv:'gold',nc:'Consultoria B2B'},
+  {n:'Juliana Santos',i:'JS',c:'from-orange-400 to-orange-800',nv:'film',nc:'Restaurante'},
+];
+
+document.getElementById('net-grid').innerHTML = mentorados.map(m => `
+  <article class="card p-6 relative">
+    <div class="flex items-start gap-4 mb-5">
+      <div class="w-14 h-14 rounded-full bg-gradient-to-br ${m.c} flex items-center justify-center font-display text-lg font-semibold text-white shrink-0">${m.i}</div>
+      <div class="flex-1 min-w-0">
+        <span class="badge-${m.nv} text-[9px] uppercase tracking-wider px-2 py-0.5 rounded font-bold">${m.nv==='esm'?'Esmeralda':m.nv==='film'?'Filmmaker':'Gold'}</span>
+        <h3 class="font-display text-lg font-semibold leading-tight mt-1">${m.n}</h3>
+        <div class="text-[10px] uppercase tracking-widest mt-1" style="color: var(--cream-dim);">${m.nc}</div>
+      </div>
+    </div>
+    <div class="locked rounded-xl" style="height: 44px;">
+      <div class="locked-content flex gap-2 h-full">
+        <div class="flex-1 rounded-xl" style="background: #10b981;"></div>
+        <div class="w-11 rounded-xl border" style="border-color: rgba(255,255,255,0.1);"></div>
+      </div>
+      <div class="locked-overlay" onclick="window.location.href='https://wa.me/5521988784033'" style="border-radius: 12px;">
+        <div class="flex items-center gap-2">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--gold);"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span class="text-[10px] uppercase tracking-widest font-semibold" style="color: var(--cream);">Contato bloqueado</span>
+        </div>
+      </div>
+    </div>
+  </article>
+`).join('');
+
+// Conteúdos
+const conteudos = [
+  {t:'Como posicionar autoridade sem parecer arrogante',cat:'Autoridade',cor:'from-emerald-900/40'},
+  {t:'Gancho: a primeira linha vale o Reel',cat:'Reels',cor:'from-rose-900/40'},
+  {t:'Script de fechamento: "vou pensar"',cat:'Vendas',cor:'from-blue-900/40'},
+  {t:'Storytelling em 5 atos do Marcello',cat:'Copy',cor:'from-purple-900/40'},
+  {t:'CTA sem parecer vendedor',cat:'Vendas',cor:'from-indigo-900/40'},
+  {t:'Como responder haters com elegância',cat:'Autoridade',cor:'from-amber-900/40'},
+  {t:'Roteiro viral em 4 blocos',cat:'Reels',cor:'from-pink-900/40'},
+  {t:'Copy que converte em DM',cat:'Copy',cor:'from-teal-900/40'},
+];
+
+document.getElementById('cont-grid').innerHTML = conteudos.map(c => `
+  <article class="card overflow-hidden">
+    <div class="aspect-video relative bg-gradient-to-br ${c.cor} via-black to-black">
+      <div class="locked absolute inset-0">
+        <div class="locked-content w-full h-full flex items-center justify-center">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" class="opacity-30"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+        <div class="locked-overlay" onclick="window.location.href='https://wa.me/5521988784033'">
+          <div class="lock-icon-bg" style="width: 44px; height: 44px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div class="lock-text" style="font-size: 9px;">Bloqueado</div>
+        </div>
+      </div>
+      <div class="absolute top-3 left-3 z-10"><span class="px-2 py-0.5 rounded text-[9px] uppercase tracking-widest bg-black/80 backdrop-blur font-semibold">${c.cat}</span></div>
+    </div>
+    <div class="p-4">
+      <h4 class="font-display font-semibold text-base leading-tight">${c.t}</h4>
+      <div class="text-[10px] uppercase tracking-widest mt-2" style="color: var(--cream-dim);">Disponível pra mentorados</div>
+    </div>
+  </article>
+`).join('');
+
+// Home latest
+document.getElementById('home-latest').innerHTML = conteudos.slice(0,3).map(c => `
+  <article class="card overflow-hidden">
+    <div class="aspect-video relative bg-gradient-to-br ${c.cor} via-black to-black">
+      <div class="locked absolute inset-0">
+        <div class="locked-content w-full h-full flex items-center justify-center">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" class="opacity-30"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+        <div class="locked-overlay" onclick="window.location.href='https://wa.me/5521988784033'">
+          <div class="lock-icon-bg">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div class="lock-text">Bloqueado</div>
+        </div>
+      </div>
+      <div class="absolute top-3 left-3 z-10"><span class="px-2 py-0.5 rounded text-[9px] uppercase tracking-widest bg-black/80 backdrop-blur font-semibold" style="color: var(--gold);">${c.cat}</span></div>
+    </div>
+    <div class="p-5">
+      <h4 class="font-display font-semibold text-lg leading-tight">${c.t}</h4>
+    </div>
+  </article>
+`).join('');
+
+// Acervo
+const acervo = [
+  {t:'Live #34: Construindo autoridade do zero',d:'14 Abr 2026',dur:'1h 24min',tag:'Autoridade'},
+  {t:'Live #33: Como o Gustavo escalou de 2k pra 80k seguidores',d:'07 Abr 2026',dur:'1h 45min',tag:'Case'},
+  {t:'Mentoria em grupo: objeções mais comuns em 2026',d:'31 Mar 2026',dur:'2h 10min',tag:'Vendas'},
+  {t:'Workshop: Reels que vendem mentoria alto ticket',d:'24 Mar 2026',dur:'1h 58min',tag:'Reels'},
+  {t:'Imersão presencial RJ: highlights',d:'10 Mar 2026',dur:'3h 12min',tag:'Evento'},
+];
+document.getElementById('acervo-list').innerHTML = acervo.map(a => `
+  <article class="card p-5 flex items-center gap-5 cursor-pointer relative overflow-hidden" onclick="window.location.href='https://wa.me/5521988784033'">
+    <div class="w-14 h-14 rounded-xl flex items-center justify-center shrink-0" style="background: linear-gradient(135deg, rgba(212,165,55,0.15), rgba(26,37,86,0.3));">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--gold);"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-3 mb-1 text-[10px] uppercase tracking-widest" style="color: var(--cream-dim);">
+        <span class="gold-text font-semibold">${a.tag}</span><span>·</span><span>${a.d}</span><span>·</span><span>${a.dur}</span>
+      </div>
+      <h4 class="font-display text-lg font-light">${a.t}</h4>
+      <div class="text-[10px] uppercase tracking-widest mt-1" style="color: var(--gold); opacity: 0.8;">🔒 Disponível pra mentorados</div>
+    </div>
+  </article>
+`).join('');
+
+// Mural - mostra parte e bloqueia o resto
+const mural = [
+  {cat:'Ao vivo',bg:'#ef4444',d:'Hoje · 20h',t:'Live com Marcello: O que mudou nos algoritmos em 2026',desc:'Análise completa das mudanças do Instagram e TikTok. Traz dúvida pronta.'},
+  {cat:'Novidade',bg:'var(--gold)',d:'Ontem',t:'Nova trilha: Reels de alta conversão',desc:'12 aulas inéditas no Acervo, focadas em transformar views em agendamentos.'},
+  {cat:'Evento',bg:'#10b981',d:'Há 3 dias',t:'Imersão presencial SP: inscrições abertas',desc:'Sábado 17 de maio, Hotel Tivoli. Vagas limitadas a 40 mentorados.'},
+];
+document.getElementById('mural-list').innerHTML = mural.map((m, i) => {
+  const isLocked = i > 0;
+  if (!isLocked) {
+    return `
+      <article class="card p-6">
+        <div class="flex items-center gap-3 mb-4 text-[10px] uppercase tracking-widest">
+          <span class="px-2 py-0.5 rounded font-bold" style="background: ${m.bg}; color: ${m.cat==='Ao vivo'?'white':'var(--navy)'};">${m.cat}</span>
+          <span style="color: var(--cream-dim);">${m.d}</span>
+        </div>
+        <h3 class="font-display text-xl md:text-2xl font-light leading-tight mb-3">${m.t}</h3>
+        <p class="text-sm" style="color: var(--cream-dim);">${m.desc}</p>
+      </article>
+    `;
+  }
+  return `
+    <article class="locked card p-6" style="min-height: 160px;">
+      <div class="locked-content">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="px-2 py-0.5 rounded font-bold text-[10px]" style="background: ${m.bg}; color: ${m.cat==='Ao vivo'?'white':'var(--navy)'};">${m.cat}</span>
+          <span class="text-[10px] uppercase tracking-widest" style="color: var(--cream-dim);">${m.d}</span>
+        </div>
+        <h3 class="font-display text-xl md:text-2xl font-light leading-tight mb-3">${m.t}</h3>
+        <p class="text-sm" style="color: var(--cream-dim);">${m.desc}</p>
+      </div>
+      <div class="locked-overlay" onclick="window.location.href='https://wa.me/5521988784033'">
+        <div class="lock-icon-bg">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div class="lock-text">Aviso bloqueado</div>
+      </div>
+    </article>
+  `;
+}).join('');
+
+// Tab switcher
+function goTo(tab) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.tab === tab));
+  document.querySelectorAll('[id^="tab-"]').forEach(s => s.classList.add('hidden'));
+  document.getElementById('tab-'+tab).classList.remove('hidden');
+  if (window.innerWidth < 1024) toggleSidebar();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+document.querySelectorAll('.nav-item').forEach(n => n.addEventListener('click', () => goTo(n.dataset.tab)));
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('open');
+}
+</script>
+</body>
+</html>

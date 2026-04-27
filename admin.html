@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Portal CD Grupo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root { --navy: #050a1f; --navy-2: #0a1130; --navy-3: #111a42; --gold: #d4a537; --gold-light: #e9c46a; --cream: #f5eedd; --cream-dim: #a8a29e; }
+  * { -webkit-font-smoothing: antialiased; }
+  body { font-family: 'Inter', sans-serif; background: var(--navy); color: var(--cream); }
+  .font-display { font-family: 'Fraunces', serif; }
+  .gold-text { background: linear-gradient(135deg, var(--gold-light), var(--gold)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .btn-gold { background: linear-gradient(135deg, var(--gold-light), var(--gold)); color: var(--navy); font-weight: 600; transition: all .3s; }
+  .btn-gold:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 10px 24px -8px rgba(212,165,55,.4); }
+  .btn-gold:disabled { opacity: .5; cursor: not-allowed; }
+  .nav-item { display:flex; align-items:center; gap:12px; padding:12px 16px; border-radius:12px; color: var(--cream-dim); transition: all .25s; cursor:pointer; font-weight:500; font-size:14px; }
+  .nav-item:hover { color: var(--cream); background: rgba(255,255,255,0.04); }
+  .nav-item.active { color: var(--navy); background: linear-gradient(135deg, var(--gold-light), var(--gold)); }
+  .card { background: linear-gradient(180deg, var(--navy-2), var(--navy)); border: 1px solid rgba(212,165,55,0.1); border-radius: 16px; }
+  .card:hover { border-color: rgba(212,165,55,0.25); }
+  .badge-gold { background: linear-gradient(135deg, #fde68a, #d4a537 50%, #a07821); color: var(--navy); font-weight: 700; }
+  .badge-esm { background: linear-gradient(135deg, #34d399, #10b981 50%, #047857); color: var(--navy); font-weight: 700; }
+  .badge-film { background: linear-gradient(135deg, #e9d5ff, #a855f7 50%, #7e22ce); color: white; font-weight: 700; }
+  .badge-status-ativo { background: rgba(16,185,129,0.15); color: #34d399; }
+  .badge-status-inad { background: rgba(220,38,38,0.15); color: #f87171; }
+  .badge-status-pausado { background: rgba(245,158,11,0.15); color: #fbbf24; }
+  .badge-status-expirado { background: rgba(120,113,108,0.2); color: #a8a29e; }
+  .input-field { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); transition: all .25s; color: var(--cream); }
+  .input-field:focus { border-color: rgba(212,165,55,0.5); background: rgba(255,255,255,0.06); outline: none; }
+  .section { animation: fade .4s cubic-bezier(.22,1,.36,1); }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .table-row:hover { background: rgba(212,165,55,0.04); }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { background: rgba(212,165,55,0.2); border-radius: 4px; }
+  .modal-bg { background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); }
+  @media (max-width: 1023px) {
+    .sidebar { transform: translateX(-100%); transition: transform .3s; }
+    .sidebar.open { transform: translateX(0); }
+    .sidebar-overlay { display: none; }
+    .sidebar-overlay.open { display: block; }
+  }
+  .spinner { animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .toast { animation: toastIn .3s ease, toastOut .3s ease 3s forwards; }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+  @keyframes toastOut { to { opacity: 0; transform: translateY(20px); } }
+</style>
+</head>
+<body class="min-h-screen flex">
+
+<!-- Loading -->
+<div id="loading-screen" class="fixed inset-0 z-[100] flex items-center justify-center" style="background: var(--navy);">
+  <div class="text-center">
+    <svg class="spinner w-12 h-12 mx-auto mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gold);"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+    <div class="text-[10px] uppercase tracking-[0.3em] gold-text font-semibold">Verificando acesso</div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<aside id="sidebar" class="sidebar fixed lg:static inset-y-0 left-0 w-72 z-50 flex flex-col border-r" style="background: rgba(10,17,48,0.98); border-color: rgba(212,165,55,0.25);">
+  <div class="p-6 flex items-center gap-3 border-b" style="border-color: rgba(212,165,55,0.15);">
+    <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, var(--gold-light), var(--gold));">
+      <span class="font-display font-bold text-lg" style="color: var(--navy);">cd</span>
+    </div>
+    <div>
+      <div class="font-display text-lg leading-none">CD Grupo</div>
+      <div class="text-[10px] uppercase tracking-[0.25em] mt-1 gold-text font-semibold">Admin Panel</div>
+    </div>
+    <button onclick="toggleSidebar()" class="lg:hidden ml-auto" style="color: var(--cream-dim);">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+    <div class="text-[10px] uppercase tracking-[0.25em] px-3 py-2 font-semibold" style="color: var(--cream-dim);">Gestão</div>
+    <div data-section="dashboard" class="nav-item active">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+      Dashboard
+    </div>
+    <div data-section="mentorados" class="nav-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/></svg>
+      Mentorados
+    </div>
+    <div data-section="conteudos" class="nav-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Conteúdos
+    </div>
+    <div data-section="acervo" class="nav-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      Acervo
+    </div>
+    <div data-section="mural" class="nav-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/></svg>
+      Mural
+    </div>
+    <a href="app.html" class="nav-item mt-4 pt-4 border-t" style="border-color: rgba(212,165,55,0.15);">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Ver portal
+    </a>
+  </nav>
+
+  <div class="p-4 border-t" style="border-color: rgba(212,165,55,0.15);">
+    <div class="card p-4 flex items-center gap-3">
+      <div id="admin-avatar" class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-700 flex items-center justify-center font-display font-semibold" style="color: var(--navy);">DU</div>
+      <div class="flex-1 min-w-0">
+        <div id="admin-nome" class="text-sm font-semibold truncate">Admin</div>
+        <div class="text-[10px] uppercase tracking-widest mt-0.5 gold-text font-semibold">Super Admin</div>
+      </div>
+      <button id="btn-sair" class="opacity-60 hover:opacity-100 transition" title="Sair">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+    </div>
+  </div>
+</aside>
+<div id="sidebar-overlay" class="sidebar-overlay fixed inset-0 modal-bg z-40" onclick="toggleSidebar()"></div>
+
+<!-- MAIN -->
+<main class="flex-1 min-w-0 flex flex-col">
+  <div class="lg:hidden sticky top-0 z-30 backdrop-blur-xl border-b p-4 flex items-center gap-3" style="background: rgba(5,10,31,0.95); border-color: rgba(212,165,55,0.25);">
+    <button onclick="toggleSidebar()" style="color: var(--gold);">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="font-display text-base gold-text">CD Grupo Admin</div>
+  </div>
+
+  <div class="flex-1 p-6 md:p-10 overflow-x-hidden">
+
+    <!-- DASHBOARD -->
+    <section id="sec-dashboard" class="section">
+      <div class="mb-8">
+        <div class="text-[11px] uppercase tracking-[0.3em] gold-text font-semibold mb-2">Visão geral</div>
+        <h1 class="font-display text-4xl md:text-5xl font-light">Olá, <span id="hello-nome">admin</span></h1>
+      </div>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="card p-5">
+          <div class="text-[10px] uppercase tracking-widest mb-2" style="color: var(--cream-dim);">Mentorados ativos</div>
+          <div class="font-display text-3xl font-light" id="kpi-ativos">--</div>
+        </div>
+        <div class="card p-5">
+          <div class="text-[10px] uppercase tracking-widest mb-2" style="color: var(--cream-dim);">Conteúdos no ar</div>
+          <div class="font-display text-3xl font-light" id="kpi-conteudos">--</div>
+        </div>
+        <div class="card p-5">
+          <div class="text-[10px] uppercase tracking-widest mb-2" style="color: var(--cream-dim);">Vencendo em 7d</div>
+          <div class="font-display text-3xl font-light" id="kpi-vencendo" style="color: #fbbf24;">--</div>
+        </div>
+        <div class="card p-5">
+          <div class="text-[10px] uppercase tracking-widest mb-2" style="color: var(--cream-dim);">Inadimplentes</div>
+          <div class="font-display text-3xl font-light" id="kpi-inad" style="color: #f87171;">--</div>
+        </div>
+      </div>
+
+      <div id="alerta-vencendo" class="hidden card p-6 mb-8" style="border-color: rgba(245,158,11,0.3);">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background: rgba(245,158,11,0.15);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #fbbf24;"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div>
+            <h3 class="font-display text-lg">Vencendo em 7 dias</h3>
+            <p class="text-xs" style="color: var(--cream-dim);">Acionar pra renovação.</p>
+          </div>
+        </div>
+        <div class="space-y-2" id="lista-vencendo"></div>
+      </div>
+
+      <h2 class="font-display text-2xl mb-4">Ações rápidas</h2>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <button onclick="goTo('mentorados'); abrirModal('modal-mentorado')" class="card p-5 text-left hover:scale-[1.02] transition">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style="background: rgba(212,165,55,0.15);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gold);"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          </div>
+          <div class="font-display text-base mb-1">Cadastrar mentorado</div>
+          <div class="text-xs" style="color: var(--cream-dim);">Cria conta + senha temporária</div>
+        </button>
+        <button onclick="goTo('conteudos'); abrirModal('modal-conteudo')" class="card p-5 text-left hover:scale-[1.02] transition">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style="background: rgba(212,165,55,0.15);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gold);"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+          <div class="font-display text-base mb-1">Postar conteúdo</div>
+          <div class="text-xs" style="color: var(--cream-dim);">Cola link YouTube</div>
+        </button>
+        <button onclick="goTo('mural'); abrirModal('modal-mural')" class="card p-5 text-left hover:scale-[1.02] transition">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style="background: rgba(212,165,55,0.15);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gold);"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/></svg>
+          </div>
+          <div class="font-display text-base mb-1">Aviso no mural</div>
+          <div class="text-xs" style="color: var(--cream-dim);">Live, evento, novidade</div>
+        </button>
+        <button onclick="goTo('acervo'); abrirModal('modal-acervo')" class="card p-5 text-left hover:scale-[1.02] transition">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style="background: rgba(212,165,55,0.15);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gold);"><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          </div>
+          <div class="font-display text-base mb-1">Subir live antiga</div>
+          <div class="text-xs" style="color: var(--cream-dim);">Adicionar ao acervo</div>
+        </button>
+      </div>
+    </section>
+
+    <!-- MENTORADOS -->
+    <section id="sec-mentorados" class="section hidden">
+      <div class="mb-8 flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <div class="text-[11px] uppercase tracking-[0.3em] gold-text font-semibold mb-2">Gestão</div>
+          <h1 class="font-display text-4xl font-light">Mentorados</h1>
+        </div>
+        <button onclick="abrirModal('modal-mentorado')" class="btn-gold px-5 py-3 rounded-xl text-sm flex items-center gap-2">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5v14"/></svg>
+          Novo mentorado
+        </button>
+      </div>
+      <div class="card overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b text-[10px] uppercase tracking-widest" style="border-color: rgba(212,165,55,0.15); color: var(--cream-dim);">
+                <th class="text-left p-4 font-semibold">Mentorado</th>
+                <th class="text-left p-4 font-semibold">Nível</th>
+                <th class="text-left p-4 font-semibold">Status</th>
+                <th class="text-left p-4 font-semibold">Vencimento</th>
+                <th class="text-left p-4 font-semibold"></th>
+              </tr>
+            </thead>
+            <tbody id="tbody-mentorados">
+              <tr><td colspan="5" class="text-center py-8" style="color: var(--cream-dim);">Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTEÚDOS -->
+    <section id="sec-conteudos" class="section hidden">
+      <div class="mb-8 flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <div class="text-[11px] uppercase tracking-[0.3em] gold-text font-semibold mb-2">Gestão</div>
+          <h1 class="font-display text-4xl font-light">Conteúdos</h1>
+        </div>
+        <button onclick="abrirModal('modal-conteudo')" class="btn-gold px-5 py-3 rounded-xl text-sm flex items-center gap-2">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5v14"/></svg>
+          Postar conteúdo
+        </button>
+      </div>
+      <div class="space-y-3" id="lista-conteudos">
+        <div class="text-center py-8" style="color: var(--cream-dim);">Carregando...</div>
+      </div>
+    </section>
+
+    <!-- ACERVO -->
+    <section id="sec-acervo" class="section hidden">
+      <div class="mb-8 flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <div class="text-[11px] uppercase tracking-[0.3em] gold-text font-semibold mb-2">Gestão</div>
+          <h1 class="font-display text-4xl font-light">Acervo</h1>
+        </div>
+        <button onclick="abrirModal('modal-acervo')" class="btn-gold px-5 py-3 rounded-xl text-sm flex items-center gap-2">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5v14"/></svg>
+          Adicionar ao acervo
+        </button>
+      </div>
+      <div class="space-y-3" id="lista-acervo">
+        <div class="text-center py-8" style="color: var(--cream-dim);">Carregando...</div>
+      </div>
+    </section>
+
+    <!-- MURAL -->
+    <section id="sec-mural" class="section hidden">
+      <div class="mb-8 flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <div class="text-[11px] uppercase tracking-[0.3em] gold-text font-semibold mb-2">Gestão</div>
+          <h1 class="font-display text-4xl font-light">Mural de avisos</h1>
+        </div>
+        <button onclick="abrirModal('modal-mural')" class="btn-gold px-5 py-3 rounded-xl text-sm flex items-center gap-2">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5v14"/></svg>
+          Novo aviso
+        </button>
+      </div>
+      <div class="space-y-3" id="lista-mural">
+        <div class="text-center py-8" style="color: var(--cream-dim);">Carregando...</div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- MODAL: MENTORADO -->
+<div id="modal-mentorado" class="hidden fixed inset-0 modal-bg z-50 flex items-center justify-center p-4">
+  <div class="card max-w-lg w-full max-h-[90vh] overflow-y-auto p-8" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="font-display text-2xl" id="modal-mentorado-titulo">Novo mentorado</h2>
+      <button onclick="fecharModal('modal-mentorado')" style="color: var(--cream-dim);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <input type="hidden" id="m-id">
+    <div class="space-y-4">
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Nome completo *</label>
+        <input id="m-nome" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="Felipe Souza">
+      </div>
+      <div id="campo-email-novo">
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">E-mail *</label>
+        <input id="m-email" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="email@dominio.com" type="email">
+        <p class="text-[11px] mt-2" style="color: var(--cream-dim);">⚡ Mentorado vai usar pra fazer login</p>
+      </div>
+      <div id="campo-senha-novo">
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Senha temporária *</label>
+        <div class="relative">
+          <input id="m-senha" class="input-field w-full px-4 py-3 rounded-xl text-sm pr-24" placeholder="Mínimo 6 caracteres">
+          <button type="button" onclick="gerarSenha()" class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 rounded text-[10px] uppercase tracking-widest font-semibold" style="background: rgba(212,165,55,0.15); color: var(--gold);">Gerar</button>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">WhatsApp</label>
+          <input id="m-whatsapp" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="5521999999999">
+        </div>
+        <div>
+          <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Instagram</label>
+          <input id="m-instagram" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="@usuario">
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Nível *</label>
+          <select id="m-nivel" class="input-field w-full px-4 py-3 rounded-xl text-sm">
+            <option value="gold" style="background: var(--navy-2);">Gold</option>
+            <option value="esmeralda" style="background: var(--navy-2);">Esmeralda</option>
+            <option value="filmmaker" style="background: var(--navy-2);">Filmmaker</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Status</label>
+          <select id="m-status" class="input-field w-full px-4 py-3 rounded-xl text-sm">
+            <option value="ativo" style="background: var(--navy-2);">Ativo</option>
+            <option value="inadimplente" style="background: var(--navy-2);">Inadimplente</option>
+            <option value="pausado" style="background: var(--navy-2);">Pausado</option>
+            <option value="cancelado" style="background: var(--navy-2);">Cancelado</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Nicho</label>
+        <input id="m-nicho" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="Restaurante, Imobiliário...">
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Entrada</label>
+          <input type="date" id="m-entrada" class="input-field w-full px-4 py-3 rounded-xl text-sm">
+        </div>
+        <div>
+          <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Próx. vencimento</label>
+          <input type="date" id="m-vencimento" class="input-field w-full px-4 py-3 rounded-xl text-sm">
+        </div>
+      </div>
+      <div id="m-erro" class="hidden p-3 rounded-xl text-sm" style="background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.3); color: #fca5a5;"></div>
+      <button id="btn-salvar-mentorado" class="btn-gold w-full py-3 rounded-xl text-sm mt-4">Salvar mentorado</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: CONTEÚDO -->
+<div id="modal-conteudo" class="hidden fixed inset-0 modal-bg z-50 flex items-center justify-center p-4">
+  <div class="card max-w-lg w-full max-h-[90vh] overflow-y-auto p-8" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="font-display text-2xl" id="modal-conteudo-titulo">Postar conteúdo</h2>
+      <button onclick="fecharModal('modal-conteudo')" style="color: var(--cream-dim);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <input type="hidden" id="c-id">
+    <div class="space-y-4">
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Link do YouTube *</label>
+        <input id="c-url" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="https://youtu.be/abc123">
+        <p class="text-[11px] mt-2" style="color: var(--cream-dim);">💡 Vídeos não-listados pra privacidade</p>
+      </div>
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Título *</label>
+        <input id="c-titulo" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="Como posicionar autoridade">
+      </div>
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Descrição</label>
+        <textarea id="c-descricao" rows="3" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="Sobre o que é..."></textarea>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Categoria</label>
+          <input id="c-categoria" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="Reels, Vendas...">
+        </div>
+        <div>
+          <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Quem vê *</label>
+          <select id="c-nivel" class="input-field w-full px-4 py-3 rounded-xl text-sm">
+            <option value="gold" style="background: var(--navy-2);">Todos (Gold+)</option>
+            <option value="esmeralda" style="background: var(--navy-2);">Esmeralda + Filmmaker</option>
+            <option value="filmmaker" style="background: var(--navy-2);">Só Filmmaker</option>
+          </select>
+        </div>
+      </div>
+      <div id="c-erro" class="hidden p-3 rounded-xl text-sm" style="background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.3); color: #fca5a5;"></div>
+      <button id="btn-salvar-conteudo" class="btn-gold w-full py-3 rounded-xl text-sm mt-4">Publicar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ACERVO -->
+<div id="modal-acervo" class="hidden fixed inset-0 modal-bg z-50 flex items-center justify-center p-4">
+  <div class="card max-w-lg w-full max-h-[90vh] overflow-y-auto p-8" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="font-display text-2xl" id="modal-acervo-titulo">Adicionar ao acervo</h2>
+      <button onclick="fecharModal('modal-acervo')" style="color: var(--cream-dim);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <input type="hidden" id="a-id">
+    <div class="space-y-4">
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Link do YouTube *</label>
+        <input id="a-url" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="https://youtu.be/abc123">
+      </div>
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Título *</label>
+        <input id="a-titulo" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="Live #34: Construindo autoridade">
+      </div>
+      <div class="grid grid-cols-3 gap-3">
+        <div>
+          <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Tag</label>
+          <input id="a-tag" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="Live, Workshop">
+        </div>
+        <div>
+          <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Data</label>
+          <input id="a-data" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="14 Abr 2026">
+        </div>
+        <div>
+          <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Duração</label>
+          <input id="a-duracao" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="1h 24min">
+        </div>
+      </div>
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Quem vê *</label>
+        <select id="a-nivel" class="input-field w-full px-4 py-3 rounded-xl text-sm">
+          <option value="gold" style="background: var(--navy-2);">Todos (Gold+)</option>
+          <option value="esmeralda" style="background: var(--navy-2);">Esmeralda + Filmmaker</option>
+          <option value="filmmaker" style="background: var(--navy-2);">Só Filmmaker</option>
+        </select>
+      </div>
+      <div id="a-erro" class="hidden p-3 rounded-xl text-sm" style="background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.3); color: #fca5a5;"></div>
+      <button id="btn-salvar-acervo" class="btn-gold w-full py-3 rounded-xl text-sm mt-4">Salvar no acervo</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: MURAL -->
+<div id="modal-mural" class="hidden fixed inset-0 modal-bg z-50 flex items-center justify-center p-4">
+  <div class="card max-w-lg w-full max-h-[90vh] overflow-y-auto p-8" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="font-display text-2xl" id="modal-mural-titulo">Novo aviso</h2>
+      <button onclick="fecharModal('modal-mural')" style="color: var(--cream-dim);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <input type="hidden" id="mu-id">
+    <div class="space-y-4">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Categoria *</label>
+          <select id="mu-categoria" class="input-field w-full px-4 py-3 rounded-xl text-sm">
+            <option value="Aviso" style="background: var(--navy-2);">Aviso</option>
+            <option value="Ao vivo" style="background: var(--navy-2);">Ao vivo</option>
+            <option value="Novidade" style="background: var(--navy-2);">Novidade</option>
+            <option value="Evento" style="background: var(--navy-2);">Evento</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Quando</label>
+          <input id="mu-data" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="Hoje · 20h">
+        </div>
+      </div>
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Título *</label>
+        <input id="mu-titulo" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="Live com Marcello hoje 20h">
+      </div>
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Descrição</label>
+        <textarea id="mu-descricao" rows="3" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="Detalhes do aviso..."></textarea>
+      </div>
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Quem vê *</label>
+        <select id="mu-nivel" class="input-field w-full px-4 py-3 rounded-xl text-sm">
+          <option value="gold" style="background: var(--navy-2);">Todos (Gold+)</option>
+          <option value="esmeralda" style="background: var(--navy-2);">Esmeralda + Filmmaker</option>
+          <option value="filmmaker" style="background: var(--navy-2);">Só Filmmaker</option>
+        </select>
+      </div>
+      <div id="mu-erro" class="hidden p-3 rounded-xl text-sm" style="background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.3); color: #fca5a5;"></div>
+      <button id="btn-salvar-mural" class="btn-gold w-full py-3 rounded-xl text-sm mt-4">Publicar aviso</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast-container" class="fixed bottom-6 right-6 z-[200] space-y-2"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc, collection, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBth5GU8NsDj1-9s5-y2IomFCuMvxPZb3w",
+  authDomain: "portal-cd-grupo.firebaseapp.com",
+  projectId: "portal-cd-grupo",
+  storageBucket: "portal-cd-grupo.firebasestorage.app",
+  messagingSenderId: "145153980911",
+  appId: "1:145153980911:web:ed797fa1795d65d90f9e1a"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let adminUser = null;
+let adminData = null;
+let adminEmail = null;
+let adminPasswordCache = null; // pra reautenticar depois de criar mentorado
+
+const $ = (id) => document.getElementById(id);
+
+// Toast
+function toast(msg, tipo = "ok") {
+  const cor = tipo === "ok" ? "#10b981" : tipo === "erro" ? "#ef4444" : "#fbbf24";
+  const div = document.createElement("div");
+  div.className = "toast card p-4 flex items-center gap-3 max-w-sm";
+  div.style.borderColor = cor;
+  div.innerHTML = `<div class="w-2 h-2 rounded-full" style="background: ${cor};"></div><div class="text-sm">${msg}</div>`;
+  $("toast-container").appendChild(div);
+  setTimeout(() => div.remove(), 3500);
+}
+window.toast = toast;
+
+// Auth check
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "index.html";
+    return;
+  }
+  const adminDoc = await getDoc(doc(db, "admins", user.uid));
+  if (!adminDoc.exists()) {
+    alert("Acesso negado. Apenas admins podem entrar aqui.");
+    window.location.href = "app.html";
+    return;
+  }
+  adminUser = user;
+  adminData = adminDoc.data();
+  adminEmail = user.email;
+  $("admin-nome").textContent = adminData.nome || "Admin";
+  $("hello-nome").textContent = (adminData.nome || "admin").split(" ")[0];
+  const inicial = (adminData.nome || "AD").charAt(0).toUpperCase() + ((adminData.nome||"").split(" ")[1]?.charAt(0).toUpperCase() || "D");
+  $("admin-avatar").textContent = inicial;
+
+  await carregarTudo();
+  $("loading-screen").style.display = "none";
+});
+
+// === DADOS ===
+let allMentorados = [], allConteudos = [], allAcervo = [], allMural = [];
+
+async function carregarTudo() {
+  await Promise.all([
+    carregarMentorados(),
+    carregarConteudos(),
+    carregarAcervo(),
+    carregarMural()
+  ]);
+  atualizarDashboard();
+  renderMentorados();
+  renderConteudos();
+  renderAcervo();
+  renderMural();
+}
+
+async function carregarMentorados() {
+  try {
+    const snap = await getDocs(collection(db, "mentorados"));
+    allMentorados = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch (e) { console.error(e); }
+}
+async function carregarConteudos() {
+  try {
+    const snap = await getDocs(collection(db, "conteudos"));
+    allConteudos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch (e) { console.error(e); }
+}
+async function carregarAcervo() {
+  try {
+    const snap = await getDocs(collection(db, "acervo"));
+    allAcervo = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch (e) { console.error(e); }
+}
+async function carregarMural() {
+  try {
+    const snap = await getDocs(collection(db, "mural"));
+    allMural = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch (e) { console.error(e); }
+}
+
+// === DASHBOARD ===
+function atualizarDashboard() {
+  const ativos = allMentorados.filter(m => (m.status || "ativo") === "ativo").length;
+  const inad = allMentorados.filter(m => m.status === "inadimplente").length;
+  $("kpi-ativos").textContent = ativos;
+  $("kpi-conteudos").textContent = allConteudos.length;
+  $("kpi-inad").textContent = inad;
+
+  // Vencendo em 7d
+  const agora = new Date();
+  const em7d = new Date(); em7d.setDate(em7d.getDate() + 7);
+  const vencendo = allMentorados.filter(m => {
+    if (!m.vencimento || (m.status && m.status !== "ativo")) return false;
+    const venc = new Date(m.vencimento);
+    return venc >= agora && venc <= em7d;
+  });
+  $("kpi-vencendo").textContent = vencendo.length;
+
+  if (vencendo.length > 0) {
+    $("alerta-vencendo").classList.remove("hidden");
+    $("lista-vencendo").innerHTML = vencendo.map(m => {
+      const ni = m.nivel || "gold";
+      const nivelTxt = ni === "esmeralda" ? "Esmeralda" : ni === "filmmaker" ? "Filmmaker" : "Gold";
+      const badge = ni === "esmeralda" ? "esm" : ni === "filmmaker" ? "film" : "gold";
+      const dt = new Date(m.vencimento).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
+      return `
+        <div class="flex items-center justify-between p-3 rounded-lg" style="background: rgba(255,255,255,0.02);">
+          <div class="flex items-center gap-3">
+            <span class="badge-${badge} text-[9px] uppercase tracking-wider px-2 py-0.5 rounded font-bold">${nivelTxt}</span>
+            <span class="text-sm">${m.nome}</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="text-xs" style="color: var(--cream-dim);">Vence ${dt}</span>
+            ${m.whatsapp ? `<a href="https://wa.me/${m.whatsapp.replace(/\D/g,'')}" target="_blank" class="btn-gold px-3 py-1 rounded-md text-xs">WhatsApp</a>` : ''}
+          </div>
+        </div>
+      `;
+    }).join("");
+  } else {
+    $("alerta-vencendo").classList.add("hidden");
+  }
+}
+
+// === MENTORADOS ===
+function renderMentorados() {
+  const tbody = $("tbody-mentorados");
+  if (allMentorados.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8" style="color: var(--cream-dim);">Nenhum mentorado cadastrado.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = allMentorados.map(m => {
+    const ni = m.nivel || "gold";
+    const nivelTxt = ni === "esmeralda" ? "Esmeralda" : ni === "filmmaker" ? "Filmmaker" : "Gold";
+    const badge = ni === "esmeralda" ? "esm" : ni === "filmmaker" ? "film" : "gold";
+    const st = m.status || "ativo";
+    const stTxt = { ativo: "Ativo", inadimplente: "Inadimplente", pausado: "Pausado", cancelado: "Cancelado" }[st] || st;
+    const stCls = st === "inadimplente" ? "inad" : st === "pausado" ? "pausado" : st === "cancelado" ? "expirado" : "ativo";
+    const inicial = (m.nome || "?").charAt(0).toUpperCase() + ((m.nome||"").split(" ")[1]?.charAt(0).toUpperCase() || "");
+    const venc = m.vencimento ? new Date(m.vencimento).toLocaleDateString('pt-BR') : "—";
+    return `
+      <tr class="table-row border-b transition" style="border-color: rgba(255,255,255,0.04);">
+        <td class="p-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-800 flex items-center justify-center font-display text-sm font-semibold text-white">${inicial}</div>
+            <div>
+              <div class="font-medium">${m.nome || '—'}</div>
+              <div class="text-[10px]" style="color: var(--cream-dim);">${m.email || ''}</div>
+            </div>
+          </div>
+        </td>
+        <td class="p-4"><span class="badge-${badge} text-[9px] uppercase tracking-wider px-2 py-0.5 rounded font-bold">${nivelTxt}</span></td>
+        <td class="p-4"><span class="badge-status-${stCls} text-[9px] uppercase tracking-widest px-2.5 py-1 rounded font-semibold">${stTxt}</span></td>
+        <td class="p-4 text-xs" style="color: var(--cream-dim);">${venc}</td>
+        <td class="p-4 text-right">
+          <button onclick="window.editarMentorado('${m.id}')" class="opacity-60 hover:opacity-100 transition mr-2" title="Editar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <button onclick="window.removerMentorado('${m.id}', '${(m.nome||'').replace(/'/g,'')}')" class="opacity-60 hover:opacity-100 transition" style="color: #f87171;" title="Remover">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join("");
+}
+
+window.gerarSenha = () => {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
+  let senha = "";
+  for (let i = 0; i < 8; i++) senha += chars[Math.floor(Math.random() * chars.length)];
+  $("m-senha").value = senha;
+};
+
+window.editarMentorado = (id) => {
+  const m = allMentorados.find(x => x.id === id);
+  if (!m) return;
+  $("modal-mentorado-titulo").textContent = "Editar mentorado";
+  $("m-id").value = id;
+  $("m-nome").value = m.nome || "";
+  $("m-email").value = m.email || "";
+  $("m-whatsapp").value = m.whatsapp || "";
+  $("m-instagram").value = m.instagram || "";
+  $("m-nivel").value = m.nivel || "gold";
+  $("m-status").value = m.status || "ativo";
+  $("m-nicho").value = m.nicho || "";
+  $("m-entrada").value = m.entrouEm || "";
+  $("m-vencimento").value = m.vencimento || "";
+  $("campo-email-novo").style.display = "none";
+  $("campo-senha-novo").style.display = "none";
+  abrirModal("modal-mentorado");
+};
+
+window.removerMentorado = async (id, nome) => {
+  if (!confirm(`Remover ${nome} do sistema?\n\nIsso vai apagar os dados, mas a conta de login do Firebase fica (você precisa apagar manualmente em Authentication > Users se quiser).`)) return;
+  try {
+    await deleteDoc(doc(db, "mentorados", id));
+    allMentorados = allMentorados.filter(m => m.id !== id);
+    renderMentorados();
+    atualizarDashboard();
+    toast("Mentorado removido");
+  } catch (e) {
+    toast("Erro ao remover", "erro");
+  }
+};
+
+$("btn-salvar-mentorado").addEventListener("click", async () => {
+  const id = $("m-id").value;
+  const nome = $("m-nome").value.trim();
+  const email = $("m-email").value.trim();
+  const senha = $("m-senha").value;
+  const nivel = $("m-nivel").value;
+  const status = $("m-status").value;
+
+  if (!nome) { mostrarErro("m-erro", "Nome obrigatório"); return; }
+
+  const dados = {
+    nome,
+    nivel,
+    status,
+    nicho: $("m-nicho").value.trim(),
+    whatsapp: $("m-whatsapp").value.trim(),
+    instagram: $("m-instagram").value.trim(),
+    entrouEm: $("m-entrada").value,
+    vencimento: $("m-vencimento").value,
+  };
+
+  $("btn-salvar-mentorado").disabled = true;
+  $("btn-salvar-mentorado").textContent = "Salvando...";
+
+  try {
+    if (id) {
+      // Editando
+      await updateDoc(doc(db, "mentorados", id), dados);
+      const idx = allMentorados.findIndex(m => m.id === id);
+      if (idx >= 0) allMentorados[idx] = { id, ...allMentorados[idx], ...dados };
+      toast("Mentorado atualizado");
+    } else {
+      // Novo - precisa criar conta no Auth
+      if (!email) { throw new Error("E-mail obrigatório"); }
+      if (!senha || senha.length < 6) { throw new Error("Senha precisa ter no mínimo 6 caracteres"); }
+
+      // Pede senha do admin pra reautenticar depois
+      if (!adminPasswordCache) {
+        adminPasswordCache = prompt("Digite SUA senha de admin (pra continuar logado depois de criar o mentorado):");
+        if (!adminPasswordCache) { throw new Error("Operação cancelada"); }
+      }
+
+      // Cria mentorado no Auth
+      const cred = await createUserWithEmailAndPassword(auth, email, senha);
+      const novoUid = cred.user.uid;
+
+      // Salva no Firestore
+      await setDoc(doc(db, "mentorados", novoUid), { ...dados, email });
+
+      // Reautentica admin
+      await signInWithEmailAndPassword(auth, adminEmail, adminPasswordCache);
+
+      allMentorados.push({ id: novoUid, ...dados, email });
+      toast(`Mentorado criado! Senha: ${senha} (anota e passa pra ele)`);
+      alert(`✅ Mentorado criado com sucesso!\n\n📧 E-mail: ${email}\n🔑 Senha: ${senha}\n\nAnota essa senha e passa pro mentorado. Ele pode trocar depois usando "Esqueci minha senha".`);
+    }
+    fecharModal("modal-mentorado");
+    renderMentorados();
+    atualizarDashboard();
+  } catch (e) {
+    let msg = e.message || "Erro ao salvar";
+    if (e.code === "auth/email-already-in-use") msg = "Esse e-mail já tem cadastro";
+    else if (e.code === "auth/invalid-email") msg = "E-mail inválido";
+    else if (e.code === "auth/weak-password") msg = "Senha muito fraca (mín. 6 chars)";
+    mostrarErro("m-erro", msg);
+    // Tenta reautenticar admin em caso de erro
+    if (adminPasswordCache) {
+      try { await signInWithEmailAndPassword(auth, adminEmail, adminPasswordCache); } catch(_) {}
+    }
+  }
+
+  $("btn-salvar-mentorado").disabled = false;
+  $("btn-salvar-mentorado").textContent = "Salvar mentorado";
+});
+
+// === CONTEÚDOS ===
+function renderConteudos() {
+  const list = $("lista-conteudos");
+  if (allConteudos.length === 0) {
+    list.innerHTML = `<div class="text-center py-8" style="color: var(--cream-dim);">Nenhum conteúdo postado ainda.</div>`;
+    return;
+  }
+  list.innerHTML = allConteudos.map(c => {
+    const niveisTxt = { gold: "Todos", esmeralda: "Esmeralda+", filmmaker: "Filmmaker" };
+    return `
+      <div class="card p-5 flex items-center gap-4">
+        <div class="w-16 h-16 rounded-xl flex items-center justify-center shrink-0" style="background: linear-gradient(135deg, rgba(212,165,55,0.15), rgba(26,37,86,0.3));">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="color: var(--gold);"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-1 text-[10px] uppercase tracking-widest" style="color: var(--cream-dim);">
+            ${c.categoria ? `<span class="gold-text font-semibold">${c.categoria}</span><span>·</span>` : ''}
+            <span>${niveisTxt[c.nivelMinimo] || 'Todos'}</span>
+          </div>
+          <h4 class="font-display text-lg">${c.titulo || '—'}</h4>
+        </div>
+        <div class="flex gap-2 shrink-0">
+          <button onclick="window.editarConteudo('${c.id}')" class="p-2 rounded-lg hover:bg-white/5 transition"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <button onclick="window.removerConteudo('${c.id}')" class="p-2 rounded-lg hover:bg-red-500/10 transition" style="color: #f87171;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+window.editarConteudo = (id) => {
+  const c = allConteudos.find(x => x.id === id);
+  if (!c) return;
+  $("modal-conteudo-titulo").textContent = "Editar conteúdo";
+  $("c-id").value = id;
+  $("c-url").value = c.url || "";
+  $("c-titulo").value = c.titulo || "";
+  $("c-descricao").value = c.descricao || "";
+  $("c-categoria").value = c.categoria || "";
+  $("c-nivel").value = c.nivelMinimo || "gold";
+  abrirModal("modal-conteudo");
+};
+
+window.removerConteudo = async (id) => {
+  if (!confirm("Remover esse conteúdo?")) return;
+  try {
+    await deleteDoc(doc(db, "conteudos", id));
+    allConteudos = allConteudos.filter(c => c.id !== id);
+    renderConteudos();
+    atualizarDashboard();
+    toast("Conteúdo removido");
+  } catch (e) { toast("Erro ao remover", "erro"); }
+};
+
+$("btn-salvar-conteudo").addEventListener("click", async () => {
+  const id = $("c-id").value;
+  const dados = {
+    url: $("c-url").value.trim(),
+    titulo: $("c-titulo").value.trim(),
+    descricao: $("c-descricao").value.trim(),
+    categoria: $("c-categoria").value.trim(),
+    nivelMinimo: $("c-nivel").value,
+  };
+  if (!dados.url || !dados.titulo) { mostrarErro("c-erro", "URL e título obrigatórios"); return; }
+
+  $("btn-salvar-conteudo").disabled = true;
+  try {
+    if (id) {
+      await updateDoc(doc(db, "conteudos", id), dados);
+      const idx = allConteudos.findIndex(c => c.id === id);
+      if (idx >= 0) allConteudos[idx] = { ...allConteudos[idx], ...dados };
+      toast("Conteúdo atualizado");
+    } else {
+      const ref = await addDoc(collection(db, "conteudos"), { ...dados, criadoEm: serverTimestamp() });
+      allConteudos.unshift({ id: ref.id, ...dados });
+      toast("Conteúdo publicado");
+    }
+    fecharModal("modal-conteudo");
+    renderConteudos();
+    atualizarDashboard();
+  } catch (e) {
+    mostrarErro("c-erro", e.message || "Erro");
+  }
+  $("btn-salvar-conteudo").disabled = false;
+});
+
+// === ACERVO ===
+function renderAcervo() {
+  const list = $("lista-acervo");
+  if (allAcervo.length === 0) {
+    list.innerHTML = `<div class="text-center py-8" style="color: var(--cream-dim);">Nenhuma aula no acervo ainda.</div>`;
+    return;
+  }
+  list.innerHTML = allAcervo.map(a => `
+    <div class="card p-5 flex items-center gap-4">
+      <div class="w-16 h-16 rounded-xl flex items-center justify-center shrink-0" style="background: linear-gradient(135deg, rgba(212,165,55,0.15), rgba(26,37,86,0.3));">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="color: var(--gold);"><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-1 text-[10px] uppercase tracking-widest" style="color: var(--cream-dim);">
+          ${a.tag ? `<span class="gold-text font-semibold">${a.tag}</span><span>·</span>` : ''}
+          ${a.dataTexto ? `<span>${a.dataTexto}</span>` : ''}
+          ${a.duracao ? `<span>·</span><span>${a.duracao}</span>` : ''}
+        </div>
+        <h4 class="font-display text-lg">${a.titulo}</h4>
+      </div>
+      <div class="flex gap-2 shrink-0">
+        <button onclick="window.editarAcervo('${a.id}')" class="p-2 rounded-lg hover:bg-white/5 transition"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+        <button onclick="window.removerAcervo('${a.id}')" class="p-2 rounded-lg hover:bg-red-500/10 transition" style="color: #f87171;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/></svg></button>
+      </div>
+    </div>
+  `).join("");
+}
+
+window.editarAcervo = (id) => {
+  const a = allAcervo.find(x => x.id === id);
+  if (!a) return;
+  $("modal-acervo-titulo").textContent = "Editar item do acervo";
+  $("a-id").value = id;
+  $("a-url").value = a.url || "";
+  $("a-titulo").value = a.titulo || "";
+  $("a-tag").value = a.tag || "";
+  $("a-data").value = a.dataTexto || "";
+  $("a-duracao").value = a.duracao || "";
+  $("a-nivel").value = a.nivelMinimo || "gold";
+  abrirModal("modal-acervo");
+};
+
+window.removerAcervo = async (id) => {
+  if (!confirm("Remover do acervo?")) return;
+  try {
+    await deleteDoc(doc(db, "acervo", id));
+    allAcervo = allAcervo.filter(a => a.id !== id);
+    renderAcervo();
+    toast("Removido do acervo");
+  } catch (e) { toast("Erro", "erro"); }
+};
+
+$("btn-salvar-acervo").addEventListener("click", async () => {
+  const id = $("a-id").value;
+  const dados = {
+    url: $("a-url").value.trim(),
+    titulo: $("a-titulo").value.trim(),
+    tag: $("a-tag").value.trim(),
+    dataTexto: $("a-data").value.trim(),
+    duracao: $("a-duracao").value.trim(),
+    nivelMinimo: $("a-nivel").value,
+  };
+  if (!dados.url || !dados.titulo) { mostrarErro("a-erro", "URL e título obrigatórios"); return; }
+
+  $("btn-salvar-acervo").disabled = true;
+  try {
+    if (id) {
+      await updateDoc(doc(db, "acervo", id), dados);
+      const idx = allAcervo.findIndex(a => a.id === id);
+      if (idx >= 0) allAcervo[idx] = { ...allAcervo[idx], ...dados };
+      toast("Acervo atualizado");
+    } else {
+      const ref = await addDoc(collection(db, "acervo"), { ...dados, criadoEm: serverTimestamp() });
+      allAcervo.unshift({ id: ref.id, ...dados });
+      toast("Adicionado ao acervo");
+    }
+    fecharModal("modal-acervo");
+    renderAcervo();
+  } catch (e) { mostrarErro("a-erro", e.message); }
+  $("btn-salvar-acervo").disabled = false;
+});
+
+// === MURAL ===
+function renderMural() {
+  const list = $("lista-mural");
+  if (allMural.length === 0) {
+    list.innerHTML = `<div class="text-center py-8" style="color: var(--cream-dim);">Nenhum aviso no mural.</div>`;
+    return;
+  }
+  list.innerHTML = allMural.map(m => {
+    const cores = { 'ao vivo': '#ef4444', 'novidade': 'var(--gold)', 'evento': '#10b981', 'aviso': '#3b82f6' };
+    const cor = cores[(m.categoria||'aviso').toLowerCase()] || '#3b82f6';
+    const txtClaro = (m.categoria||'').toLowerCase() === 'ao vivo';
+    return `
+      <div class="card p-5 flex items-start gap-4">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-2 text-[10px] uppercase tracking-widest">
+            <span class="px-2 py-0.5 rounded font-bold" style="background: ${cor}; color: ${txtClaro?'white':'var(--navy)'};">${m.categoria || 'Aviso'}</span>
+            ${m.dataTexto ? `<span style="color: var(--cream-dim);">${m.dataTexto}</span>` : ''}
+          </div>
+          <h4 class="font-display text-lg">${m.titulo}</h4>
+        </div>
+        <div class="flex gap-2 shrink-0">
+          <button onclick="window.editarMural('${m.id}')" class="p-2 rounded-lg hover:bg-white/5 transition"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <button onclick="window.removerMural('${m.id}')" class="p-2 rounded-lg hover:bg-red-500/10 transition" style="color: #f87171;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/></svg></button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+window.editarMural = (id) => {
+  const m = allMural.find(x => x.id === id);
+  if (!m) return;
+  $("modal-mural-titulo").textContent = "Editar aviso";
+  $("mu-id").value = id;
+  $("mu-categoria").value = m.categoria || "Aviso";
+  $("mu-data").value = m.dataTexto || "";
+  $("mu-titulo").value = m.titulo || "";
+  $("mu-descricao").value = m.descricao || "";
+  $("mu-nivel").value = m.nivelMinimo || "gold";
+  abrirModal("modal-mural");
+};
+
+window.removerMural = async (id) => {
+  if (!confirm("Remover esse aviso?")) return;
+  try {
+    await deleteDoc(doc(db, "mural", id));
+    allMural = allMural.filter(m => m.id !== id);
+    renderMural();
+    toast("Aviso removido");
+  } catch (e) { toast("Erro", "erro"); }
+};
+
+$("btn-salvar-mural").addEventListener("click", async () => {
+  const id = $("mu-id").value;
+  const dados = {
+    categoria: $("mu-categoria").value,
+    dataTexto: $("mu-data").value.trim(),
+    titulo: $("mu-titulo").value.trim(),
+    descricao: $("mu-descricao").value.trim(),
+    nivelMinimo: $("mu-nivel").value,
+  };
+  if (!dados.titulo) { mostrarErro("mu-erro", "Título obrigatório"); return; }
+
+  $("btn-salvar-mural").disabled = true;
+  try {
+    if (id) {
+      await updateDoc(doc(db, "mural", id), dados);
+      const idx = allMural.findIndex(m => m.id === id);
+      if (idx >= 0) allMural[idx] = { ...allMural[idx], ...dados };
+      toast("Aviso atualizado");
+    } else {
+      const ref = await addDoc(collection(db, "mural"), { ...dados, criadoEm: serverTimestamp() });
+      allMural.unshift({ id: ref.id, ...dados });
+      toast("Aviso publicado");
+    }
+    fecharModal("modal-mural");
+    renderMural();
+  } catch (e) { mostrarErro("mu-erro", e.message); }
+  $("btn-salvar-mural").disabled = false;
+});
+
+// === HELPERS ===
+function mostrarErro(id, msg) {
+  const el = $(id);
+  el.textContent = "⚠️ " + msg;
+  el.classList.remove("hidden");
+  setTimeout(() => el.classList.add("hidden"), 5000);
+}
+
+window.abrirModal = (id) => {
+  // Reset
+  if (id === "modal-mentorado" && !$("m-id").value) {
+    $("modal-mentorado-titulo").textContent = "Novo mentorado";
+    document.querySelectorAll("#modal-mentorado input, #modal-mentorado select, #modal-mentorado textarea").forEach(el => el.value = "");
+    $("m-nivel").value = "gold";
+    $("m-status").value = "ativo";
+    $("campo-email-novo").style.display = "";
+    $("campo-senha-novo").style.display = "";
+  }
+  if (id === "modal-conteudo" && !$("c-id").value) {
+    $("modal-conteudo-titulo").textContent = "Postar conteúdo";
+    document.querySelectorAll("#modal-conteudo input, #modal-conteudo select, #modal-conteudo textarea").forEach(el => el.value = "");
+    $("c-nivel").value = "gold";
+  }
+  if (id === "modal-acervo" && !$("a-id").value) {
+    $("modal-acervo-titulo").textContent = "Adicionar ao acervo";
+    document.querySelectorAll("#modal-acervo input, #modal-acervo select").forEach(el => el.value = "");
+    $("a-nivel").value = "gold";
+  }
+  if (id === "modal-mural" && !$("mu-id").value) {
+    $("modal-mural-titulo").textContent = "Novo aviso";
+    document.querySelectorAll("#modal-mural input, #modal-mural select, #modal-mural textarea").forEach(el => el.value = "");
+    $("mu-categoria").value = "Aviso";
+    $("mu-nivel").value = "gold";
+  }
+  $(id).classList.remove("hidden");
+};
+window.fecharModal = (id) => {
+  $(id).classList.add("hidden");
+  // Limpa IDs ocultos pra próximo abrir ser "novo"
+  ["m-id", "c-id", "a-id", "mu-id"].forEach(i => { if ($(i)) $(i).value = ""; });
+};
+
+// Click fora do modal fecha
+document.querySelectorAll('[id^="modal-"]').forEach(m => {
+  m.addEventListener("click", (e) => { if (e.target === m) window.fecharModal(m.id); });
+});
+
+// Navegação
+window.goTo = (s) => {
+  document.querySelectorAll(".nav-item").forEach(n => {
+    if (n.dataset.section) n.classList.toggle("active", n.dataset.section === s);
+  });
+  document.querySelectorAll('[id^="sec-"]').forEach(sec => sec.classList.add("hidden"));
+  $("sec-"+s).classList.remove("hidden");
+  if (window.innerWidth < 1024) toggleSidebar();
+  window.scrollTo({top:0, behavior:"smooth"});
+};
+document.querySelectorAll(".nav-item").forEach(n => {
+  if (n.dataset.section) n.addEventListener("click", () => window.goTo(n.dataset.section));
+});
+
+window.toggleSidebar = () => {
+  $("sidebar").classList.toggle("open");
+  $("sidebar-overlay").classList.toggle("open");
+};
+
+$("btn-sair").addEventListener("click", async () => {
+  if (confirm("Deseja sair?")) {
+    await signOut(auth);
+    window.location.href = "index.html";
+  }
+});
+</script>
+
+</body>
+</html>

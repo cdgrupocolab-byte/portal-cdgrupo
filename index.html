@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entrar — Portal CD Grupo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root { --navy: #050a1f; --navy-2: #0a1130; --navy-3: #111a42; --gold: #d4a537; --gold-light: #e9c46a; --cream: #f5eedd; --cream-dim: #a8a29e; }
+  * { -webkit-font-smoothing: antialiased; }
+  body { font-family: 'Inter', sans-serif; background: var(--navy); color: var(--cream); min-height: 100vh; }
+  .font-display { font-family: 'Fraunces', serif; }
+  .gold-text { background: linear-gradient(135deg, var(--gold-light), var(--gold)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .btn-gold { background: linear-gradient(135deg, var(--gold-light), var(--gold)); color: var(--navy); font-weight: 600; transition: all .3s; }
+  .btn-gold:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 12px 30px -10px rgba(212,165,55,.5); }
+  .btn-gold:disabled { opacity: .5; cursor: not-allowed; }
+  .input-field { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); transition: all .25s; }
+  .input-field:focus { background: rgba(255,255,255,0.06); border-color: rgba(212,165,55,0.5); outline: none; box-shadow: 0 0 0 4px rgba(212,165,55,0.08); }
+  .login-card { background: linear-gradient(180deg, var(--navy-2), var(--navy)); border: 1px solid rgba(212,165,55,0.15); box-shadow: 0 30px 80px -20px rgba(0,0,0,0.5); }
+  .fade-in { animation: fade .8s cubic-bezier(.22,1,.36,1); }
+  @keyframes fade { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:none;} }
+  .bg-decoration::before { content:''; position: fixed; top: -200px; right: -200px; width: 600px; height: 600px; border-radius: 50%; background: var(--gold); opacity: 0.04; filter: blur(120px); pointer-events: none; }
+  .bg-decoration::after { content:''; position: fixed; bottom: -300px; left: -200px; width: 700px; height: 700px; border-radius: 50%; background: var(--navy-3); opacity: 0.5; filter: blur(120px); pointer-events: none; }
+  .spinner { animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body class="bg-decoration flex items-center justify-center p-6">
+
+<div class="w-full max-w-md fade-in relative z-10">
+  <div class="text-center mb-10">
+    <div class="inline-flex items-center gap-3 mb-6">
+      <div class="w-12 h-12 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, var(--gold-light), var(--gold)); box-shadow: 0 8px 24px -8px rgba(212,165,55,.4);">
+        <span class="font-display font-bold text-xl leading-none" style="color: var(--navy);">cd</span>
+      </div>
+    </div>
+    <h1 class="font-display text-3xl font-light mb-2">CD Grupo</h1>
+    <div class="text-[10px] uppercase tracking-[0.3em] gold-text font-semibold">Portal do Mentorado</div>
+  </div>
+
+  <div class="login-card rounded-3xl p-8 md:p-10">
+    <h2 class="font-display text-2xl mb-2">Bem-vindo de volta</h2>
+    <p class="text-sm mb-8" style="color: var(--cream-dim);">Entre com suas credenciais pra acessar o portal.</p>
+
+    <form id="login-form" class="space-y-5">
+      <div>
+        <label class="text-[10px] uppercase tracking-[0.2em] font-semibold mb-2 block" style="color: var(--cream-dim);">E-mail</label>
+        <input id="email" type="email" required placeholder="seu@email.com" class="input-field w-full px-4 py-3.5 rounded-xl text-sm" style="color: var(--cream);">
+      </div>
+      <div>
+        <div class="flex items-center justify-between mb-2">
+          <label class="text-[10px] uppercase tracking-[0.2em] font-semibold" style="color: var(--cream-dim);">Senha</label>
+          <button type="button" id="esqueci-senha" class="text-[11px] hover:opacity-80 transition" style="color: var(--gold);">Esqueci minha senha</button>
+        </div>
+        <div class="relative">
+          <input id="senha" type="password" required placeholder="••••••••" class="input-field w-full px-4 py-3.5 rounded-xl text-sm pr-12" style="color: var(--cream);">
+          <button type="button" id="toggle-senha" class="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:opacity-80 transition" style="color: var(--cream-dim);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="erro" class="hidden p-3 rounded-xl text-sm" style="background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.3); color: #fca5a5;"></div>
+      <div id="sucesso" class="hidden p-3 rounded-xl text-sm" style="background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: #34d399;"></div>
+
+      <button type="submit" id="btn-entrar" class="btn-gold w-full py-3.5 rounded-xl text-sm flex items-center justify-center gap-2">
+        <span id="btn-text">Entrar no portal</span>
+        <svg id="btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        <svg id="btn-spinner" class="spinner hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+      </button>
+    </form>
+
+    <div class="mt-8 pt-6 border-t text-center text-xs" style="border-color: rgba(255,255,255,0.05); color: var(--cream-dim);">
+      Acesso só para mentorados ativos do CD Grupo.<br>
+      Problemas pra entrar? <a href="https://wa.me/5521988784033" class="hover:opacity-80 transition" style="color: var(--gold);">Fale com o time</a>
+    </div>
+  </div>
+
+  <div class="text-center mt-8 text-[10px] uppercase tracking-[0.3em]" style="color: var(--cream-dim);">
+    CD Grupo · 2026
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBth5GU8NsDj1-9s5-y2IomFCuMvxPZb3w",
+  authDomain: "portal-cd-grupo.firebaseapp.com",
+  projectId: "portal-cd-grupo",
+  storageBucket: "portal-cd-grupo.firebasestorage.app",
+  messagingSenderId: "145153980911",
+  appId: "1:145153980911:web:ed797fa1795d65d90f9e1a"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const WHATSAPP_CS = "5521988784033";
+
+// Se já tá logado, redireciona
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    verificarERedirecionar(user);
+  }
+});
+
+async function verificarERedirecionar(user) {
+  // Verifica se é admin
+  const adminDoc = await getDoc(doc(db, "admins", user.uid));
+  if (adminDoc.exists()) {
+    window.location.href = "app.html";
+    return;
+  }
+  // Verifica se é mentorado e qual o status
+  const mentDoc = await getDoc(doc(db, "mentorados", user.uid));
+  if (mentDoc.exists()) {
+    const data = mentDoc.data();
+    const status = data.status || "ativo";
+    if (status === "ativo") {
+      // Verifica se vencimento passou
+      if (data.vencimento) {
+        const venc = new Date(data.vencimento);
+        if (venc < new Date()) {
+          mostrarBloqueio("expirado");
+          return;
+        }
+      }
+      window.location.href = "app.html";
+    } else {
+      mostrarBloqueio(status);
+    }
+  } else {
+    // Não é admin nem mentorado
+    mostrarErro("Conta não encontrada. Fale com o time.");
+    auth.signOut();
+  }
+}
+
+function mostrarBloqueio(motivo) {
+  auth.signOut();
+  const msgs = {
+    inadimplente: "Seu acesso foi suspenso por pendência financeira. Vamos resolver isso juntos.",
+    pausado: "Sua mentoria está pausada. Fale com o time.",
+    expirado: "Sua mentoria expirou. Quer renovar?",
+    cancelado: "Sua mentoria foi encerrada."
+  };
+  const msg = msgs[motivo] || "Acesso bloqueado.";
+  document.getElementById("erro").innerHTML = `${msg} <a href="https://wa.me/${WHATSAPP_CS}" class="underline font-semibold">Falar no WhatsApp</a>`;
+  document.getElementById("erro").classList.remove("hidden");
+}
+
+function mostrarErro(msg) {
+  document.getElementById("erro").innerHTML = msg;
+  document.getElementById("erro").classList.remove("hidden");
+  document.getElementById("sucesso").classList.add("hidden");
+}
+
+function mostrarSucesso(msg) {
+  document.getElementById("sucesso").innerHTML = msg;
+  document.getElementById("sucesso").classList.remove("hidden");
+  document.getElementById("erro").classList.add("hidden");
+}
+
+function setLoading(loading) {
+  const btn = document.getElementById("btn-entrar");
+  const text = document.getElementById("btn-text");
+  const arrow = document.getElementById("btn-arrow");
+  const spinner = document.getElementById("btn-spinner");
+  btn.disabled = loading;
+  if (loading) {
+    text.textContent = "Entrando...";
+    arrow.classList.add("hidden");
+    spinner.classList.remove("hidden");
+  } else {
+    text.textContent = "Entrar no portal";
+    arrow.classList.remove("hidden");
+    spinner.classList.add("hidden");
+  }
+}
+
+// Toggle senha
+document.getElementById("toggle-senha").addEventListener("click", () => {
+  const input = document.getElementById("senha");
+  input.type = input.type === "password" ? "text" : "password";
+});
+
+// Login
+document.getElementById("login-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  document.getElementById("erro").classList.add("hidden");
+  document.getElementById("sucesso").classList.add("hidden");
+  setLoading(true);
+
+  const email = document.getElementById("email").value.trim();
+  const senha = document.getElementById("senha").value;
+
+  try {
+    const cred = await signInWithEmailAndPassword(auth, email, senha);
+    await verificarERedirecionar(cred.user);
+  } catch (err) {
+    setLoading(false);
+    let msg = "Erro ao entrar. Tenta de novo.";
+    if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password" || err.code === "auth/user-not-found") {
+      msg = "E-mail ou senha incorretos.";
+    } else if (err.code === "auth/too-many-requests") {
+      msg = "Muitas tentativas. Tenta de novo daqui a pouco.";
+    } else if (err.code === "auth/invalid-email") {
+      msg = "E-mail inválido.";
+    }
+    mostrarErro(msg);
+  }
+});
+
+// Esqueci senha
+document.getElementById("esqueci-senha").addEventListener("click", async () => {
+  const email = document.getElementById("email").value.trim();
+  if (!email) {
+    mostrarErro("Digite seu e-mail no campo acima primeiro.");
+    return;
+  }
+  try {
+    await sendPasswordResetEmail(auth, email);
+    mostrarSucesso(`Enviamos um link de redefinição pro ${email}. Confere sua caixa de entrada (e o spam).`);
+  } catch (err) {
+    mostrarErro("Não consegui enviar. Confere se o e-mail tá certo.");
+  }
+});
+</script>
+
+</body>
+</html>
