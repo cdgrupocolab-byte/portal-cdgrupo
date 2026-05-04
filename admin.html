@@ -10,6 +10,21 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
   :root { --navy: #050a1f; --navy-2: #0a1130; --navy-3: #111a42; --gold: #d4a537; --gold-light: #e9c46a; --cream: #f5eedd; --cream-dim: #a8a29e; }
+
+  [data-theme="light"] {
+    --navy: #faf7f0;
+    --navy-2: #ffffff;
+    --navy-3: #f0ebe0;
+    --cream: #1a1a1a;
+    --cream-dim: #6b6b6b;
+  }
+  [data-theme="light"] .card { box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  [data-theme="light"] .nav-item:hover { background: rgba(0,0,0,0.04); }
+  [data-theme="light"] aside { background: #ffffff !important; }
+  [data-theme="light"] .lg\:hidden.sticky { background: rgba(255,255,255,0.95) !important; }
+  [data-theme="light"] input.input-field, [data-theme="light"] select.input-field, [data-theme="light"] textarea.input-field { background: #ffffff !important; border-color: rgba(0,0,0,0.1) !important; color: #1a1a1a !important; }
+  [data-theme="light"] table thead tr { border-color: rgba(0,0,0,0.1) !important; }
+  [data-theme="light"] .table-row:hover { background: rgba(212,165,55,0.08) !important; }
   * { -webkit-font-smoothing: antialiased; }
   body { font-family: 'Inter', sans-serif; background: var(--navy); color: var(--cream); }
   .font-display { font-family: 'Fraunces', serif; }
@@ -37,10 +52,10 @@
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-thumb { background: rgba(212,165,55,0.2); border-radius: 4px; }
   .modal-bg { background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); }
+  .sidebar-overlay { display: none; }
   @media (max-width: 1023px) {
     .sidebar { transform: translateX(-100%); transition: transform .3s; }
     .sidebar.open { transform: translateX(0); }
-    .sidebar-overlay { display: none; }
     .sidebar-overlay.open { display: block; }
   }
   .spinner { animation: spin 1s linear infinite; }
@@ -97,6 +112,18 @@
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/></svg>
       Mural
     </div>
+    <div data-section="eventos" class="nav-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Eventos
+    </div>
+    <div data-section="materiais" class="nav-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Materiais
+    </div>
+    <div data-section="marcello" class="nav-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 8.5l5 5-1 5-5 1-5-5"/><circle cx="9" cy="9" r="2"/><path d="M3 13l4 4"/></svg>
+      Mensagem Marcello
+    </div>
     <a href="app.html" class="nav-item mt-4 pt-4 border-t" style="border-color: rgba(212,165,55,0.15);">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
       Ver portal
@@ -110,6 +137,10 @@
         <div id="admin-nome" class="text-sm font-semibold truncate">Admin</div>
         <div class="text-[10px] uppercase tracking-widest mt-0.5 gold-text font-semibold">Super Admin</div>
       </div>
+      <button id="btn-tema" class="opacity-60 hover:opacity-100 transition" title="Trocar tema">
+        <svg id="icon-tema-dark" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg id="icon-tema-light" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hidden"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
       <button id="btn-sair" class="opacity-60 hover:opacity-100 transition" title="Sair">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       </button>
@@ -279,6 +310,59 @@
         </button>
       </div>
       <div class="space-y-3" id="lista-mural">
+        <div class="text-center py-8" style="color: var(--cream-dim);">Carregando...</div>
+      </div>
+    </section>
+
+    <!-- EVENTOS -->
+    <section id="sec-eventos" class="section hidden">
+      <div class="mb-8 flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <div class="text-[11px] uppercase tracking-[0.3em] gold-text font-semibold mb-2">Gestão</div>
+          <h1 class="font-display text-4xl font-light">Eventos</h1>
+        </div>
+        <button onclick="abrirModal('modal-evento')" class="btn-gold px-5 py-3 rounded-xl text-sm flex items-center gap-2">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5v14"/></svg>
+          Novo evento
+        </button>
+      </div>
+      <div class="space-y-3" id="lista-eventos">
+        <div class="text-center py-8" style="color: var(--cream-dim);">Carregando...</div>
+      </div>
+    </section>
+
+    <!-- MATERIAIS -->
+    <section id="sec-materiais" class="section hidden">
+      <div class="mb-8 flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <div class="text-[11px] uppercase tracking-[0.3em] gold-text font-semibold mb-2">Gestão</div>
+          <h1 class="font-display text-4xl font-light">Materiais</h1>
+          <p class="text-sm mt-2" style="color: var(--cream-dim);">PDFs, planilhas, templates. Cole link público do Google Drive.</p>
+        </div>
+        <button onclick="abrirModal('modal-material')" class="btn-gold px-5 py-3 rounded-xl text-sm flex items-center gap-2">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5v14"/></svg>
+          Novo material
+        </button>
+      </div>
+      <div class="space-y-3" id="lista-materiais">
+        <div class="text-center py-8" style="color: var(--cream-dim);">Carregando...</div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO: MENSAGEM MARCELLO -->
+    <section id="sec-marcello" class="section hidden">
+      <div class="mb-8 flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <div class="text-[11px] uppercase tracking-[0.3em] gold-text font-semibold mb-2">Comunicação</div>
+          <h1 class="font-display text-4xl font-light">Mensagem do Marcello</h1>
+          <p class="text-sm mt-2" style="color: var(--cream-dim);">Aparece destacada na home dos mentorados. A mais recente é a que fica visível.</p>
+        </div>
+        <button onclick="abrirModal('modal-marcello')" class="btn-gold px-5 py-3 rounded-xl text-sm flex items-center gap-2">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5v14"/></svg>
+          Postar mensagem
+        </button>
+      </div>
+      <div class="space-y-3" id="lista-marcello">
         <div class="text-center py-8" style="color: var(--cream-dim);">Carregando...</div>
       </div>
     </section>
@@ -501,6 +585,154 @@
   </div>
 </div>
 
+<!-- MODAL: EVENTO -->
+<div id="modal-evento" class="hidden fixed inset-0 modal-bg z-50 flex items-center justify-center p-4">
+  <div class="card max-w-lg w-full max-h-[90vh] overflow-y-auto p-8" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="font-display text-2xl" id="modal-evento-titulo">Novo evento</h2>
+      <button onclick="fecharModal('modal-evento')" style="color: var(--cream-dim);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <input type="hidden" id="ev-id">
+    <div class="space-y-4">
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Título *</label>
+        <input id="ev-titulo" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="Imersão Presencial RJ">
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Data *</label>
+          <input type="date" id="ev-data" class="input-field w-full px-4 py-3 rounded-xl text-sm">
+        </div>
+        <div>
+          <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Horário</label>
+          <input id="ev-hora" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="20h às 22h">
+        </div>
+      </div>
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Modalidade *</label>
+        <select id="ev-modalidade" class="input-field w-full px-4 py-3 rounded-xl text-sm">
+          <option value="online" style="background: var(--navy-2);">Online</option>
+          <option value="presencial" style="background: var(--navy-2);">Presencial</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Local / Link da call</label>
+        <input id="ev-local" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="Hotel Tivoli, RJ ou meet.google.com/...">
+      </div>
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Descrição</label>
+        <textarea id="ev-descricao" rows="3" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="Sobre o que é, o que vai rolar..."></textarea>
+      </div>
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Link de inscrição</label>
+        <input id="ev-link" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="https://forms.gle/... ou wa.me/...">
+        <p class="text-[11px] mt-2" style="color: var(--cream-dim);">💡 Form, WhatsApp ou link da call. Se vazio, não aparece botão.</p>
+      </div>
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Quem vê *</label>
+        <select id="ev-nivel" class="input-field w-full px-4 py-3 rounded-xl text-sm">
+          <option value="gold" style="background: var(--navy-2);">Todos (Gold+)</option>
+          <option value="esmeralda" style="background: var(--navy-2);">Esmeralda + Filmmaker</option>
+          <option value="filmmaker" style="background: var(--navy-2);">Só Filmmaker</option>
+        </select>
+      </div>
+      <div id="ev-erro" class="hidden p-3 rounded-xl text-sm" style="background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.3); color: #fca5a5;"></div>
+      <button id="btn-salvar-evento" class="btn-gold w-full py-3 rounded-xl text-sm mt-4">Publicar evento</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: MATERIAL -->
+<div id="modal-material" class="hidden fixed inset-0 modal-bg z-50 flex items-center justify-center p-4">
+  <div class="card max-w-lg w-full max-h-[90vh] overflow-y-auto p-8" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="font-display text-2xl" id="modal-material-titulo">Novo material</h2>
+      <button onclick="fecharModal('modal-material')" style="color: var(--cream-dim);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <input type="hidden" id="mat-id">
+    <div class="space-y-4">
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Link do Google Drive *</label>
+        <input id="mat-link" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="https://drive.google.com/file/d/...">
+        <p class="text-[11px] mt-2" style="color: var(--cream-dim);">⚡ No Drive: clica direito no arquivo → Compartilhar → "Qualquer pessoa com link"</p>
+      </div>
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Título *</label>
+        <input id="mat-titulo" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="Script de fechamento (Versão 2026)">
+      </div>
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Descrição</label>
+        <textarea id="mat-descricao" rows="2" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="Pra que serve, como usar..."></textarea>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Categoria</label>
+          <input id="mat-categoria" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="Vendas, Reels...">
+        </div>
+        <div>
+          <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Tipo</label>
+          <select id="mat-tipo" class="input-field w-full px-4 py-3 rounded-xl text-sm">
+            <option value="pdf" style="background: var(--navy-2);">📄 PDF</option>
+            <option value="planilha" style="background: var(--navy-2);">📊 Planilha</option>
+            <option value="doc" style="background: var(--navy-2);">📝 Documento</option>
+            <option value="template" style="background: var(--navy-2);">✨ Template</option>
+            <option value="script" style="background: var(--navy-2);">🎯 Script</option>
+            <option value="outro" style="background: var(--navy-2);">📁 Outro</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Quem vê *</label>
+        <select id="mat-nivel" class="input-field w-full px-4 py-3 rounded-xl text-sm">
+          <option value="gold" style="background: var(--navy-2);">Todos (Gold+)</option>
+          <option value="esmeralda" style="background: var(--navy-2);">Esmeralda + Filmmaker</option>
+          <option value="filmmaker" style="background: var(--navy-2);">Só Filmmaker</option>
+        </select>
+      </div>
+      <div id="mat-erro" class="hidden p-3 rounded-xl text-sm" style="background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.3); color: #fca5a5;"></div>
+      <button id="btn-salvar-material" class="btn-gold w-full py-3 rounded-xl text-sm mt-4">Salvar material</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: MENSAGEM MARCELLO -->
+<div id="modal-marcello" class="hidden fixed inset-0 modal-bg z-50 flex items-center justify-center p-4">
+  <div class="card max-w-lg w-full max-h-[90vh] overflow-y-auto p-8" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="font-display text-2xl" id="modal-marcello-titulo">Nova mensagem</h2>
+      <button onclick="fecharModal('modal-marcello')" style="color: var(--cream-dim);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <input type="hidden" id="mc-id">
+    <div class="space-y-4">
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Título *</label>
+        <input id="mc-titulo" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="Boas-vindas ao novo ciclo">
+      </div>
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Mensagem *</label>
+        <textarea id="mc-texto" rows="5" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="Galera, essa semana o foco é..."></textarea>
+      </div>
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Vídeo do YouTube (opcional)</label>
+        <input id="mc-video" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="https://youtu.be/...">
+        <p class="text-[11px] mt-2" style="color: var(--cream-dim);">Se preencher, aparece um botão "Assistir" abaixo da mensagem.</p>
+      </div>
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Data (texto livre)</label>
+        <input id="mc-data" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="Hoje · Esta semana · 28 abr">
+      </div>
+      <div id="mc-erro" class="hidden p-3 rounded-xl text-sm" style="background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.3); color: #fca5a5;"></div>
+      <button id="btn-salvar-marcello" class="btn-gold w-full py-3 rounded-xl text-sm mt-4">Postar mensagem</button>
+    </div>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div id="toast-container" class="fixed bottom-6 right-6 z-[200] space-y-2"></div>
 
@@ -566,20 +798,26 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 // === DADOS ===
-let allMentorados = [], allConteudos = [], allAcervo = [], allMural = [];
+let allMentorados = [], allConteudos = [], allAcervo = [], allMural = [], allEventos = [], allMateriais = [], allMarcello = [];
 
 async function carregarTudo() {
   await Promise.all([
     carregarMentorados(),
     carregarConteudos(),
     carregarAcervo(),
-    carregarMural()
+    carregarMural(),
+    carregarEventos(),
+    carregarMateriais(),
+    carregarMarcello()
   ]);
   atualizarDashboard();
   renderMentorados();
   renderConteudos();
   renderAcervo();
   renderMural();
+  renderEventos();
+  renderMateriais();
+  renderMarcello();
 }
 
 async function carregarMentorados() {
@@ -604,6 +842,30 @@ async function carregarMural() {
   try {
     const snap = await getDocs(collection(db, "mural"));
     allMural = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch (e) { console.error(e); }
+}
+async function carregarEventos() {
+  try {
+    const snap = await getDocs(collection(db, "eventos"));
+    allEventos = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => new Date(a.data || 0) - new Date(b.data || 0));
+  } catch (e) { console.error(e); }
+}
+async function carregarMateriais() {
+  try {
+    const snap = await getDocs(collection(db, "materiais"));
+    allMateriais = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch (e) { console.error(e); }
+}
+async function carregarMarcello() {
+  try {
+    const snap = await getDocs(collection(db, "marcello"));
+    allMarcello = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => {
+        const ta = a.criadoEm?.toMillis ? a.criadoEm.toMillis() : 0;
+        const tb = b.criadoEm?.toMillis ? b.criadoEm.toMillis() : 0;
+        return tb - ta;
+      });
   } catch (e) { console.error(e); }
 }
 
@@ -1056,6 +1318,267 @@ $("btn-salvar-mural").addEventListener("click", async () => {
   $("btn-salvar-mural").disabled = false;
 });
 
+// === EVENTOS ===
+function renderEventos() {
+  const list = $("lista-eventos");
+  if (allEventos.length === 0) {
+    list.innerHTML = `<div class="text-center py-8" style="color: var(--cream-dim);">Nenhum evento cadastrado.</div>`;
+    return;
+  }
+  list.innerHTML = allEventos.map(e => {
+    const dt = e.data ? new Date(e.data) : null;
+    const dataTxt = dt ? dt.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+    const passou = dt && dt < new Date(new Date().setDate(new Date().getDate() - 1));
+    const niveisTxt = { gold: "Todos", esmeralda: "Esmeralda+", filmmaker: "Filmmaker" };
+    return `
+      <div class="card p-5 flex items-center gap-4 ${passou ? 'opacity-50' : ''}">
+        <div class="shrink-0 w-14 h-14 rounded-xl flex flex-col items-center justify-center" style="background: linear-gradient(135deg, rgba(212,165,55,0.15), rgba(26,37,86,0.3));">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gold);"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-1 text-[10px] uppercase tracking-widest" style="color: var(--cream-dim);">
+            <span class="px-2 py-0.5 rounded font-bold" style="background: ${e.modalidade === 'presencial' ? '#ef4444' : '#3b82f6'}; color: white;">${e.modalidade === 'presencial' ? 'Presencial' : 'Online'}</span>
+            <span>${dataTxt}</span>
+            ${e.hora ? `<span>·</span><span>${e.hora}</span>` : ''}
+            <span>·</span>
+            <span>${niveisTxt[e.nivelMinimo] || 'Todos'}</span>
+            ${passou ? '<span style="color: #f87171;">· Passado</span>' : ''}
+          </div>
+          <h4 class="font-display text-lg">${e.titulo}</h4>
+          ${e.local ? `<div class="text-xs mt-1" style="color: var(--cream-dim);">📍 ${e.local}</div>` : ''}
+        </div>
+        <div class="flex gap-2 shrink-0">
+          <button onclick="window.editarEvento('${e.id}')" class="p-2 rounded-lg hover:bg-white/5 transition"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <button onclick="window.removerEvento('${e.id}')" class="p-2 rounded-lg hover:bg-red-500/10 transition" style="color: #f87171;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/></svg></button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+window.editarEvento = (id) => {
+  const e = allEventos.find(x => x.id === id);
+  if (!e) return;
+  $("modal-evento-titulo").textContent = "Editar evento";
+  $("ev-id").value = id;
+  $("ev-titulo").value = e.titulo || "";
+  $("ev-data").value = e.data || "";
+  $("ev-hora").value = e.hora || "";
+  $("ev-modalidade").value = e.modalidade || "online";
+  $("ev-local").value = e.local || "";
+  $("ev-descricao").value = e.descricao || "";
+  $("ev-link").value = e.linkInscricao || "";
+  $("ev-nivel").value = e.nivelMinimo || "gold";
+  abrirModal("modal-evento");
+};
+
+window.removerEvento = async (id) => {
+  if (!confirm("Remover esse evento?")) return;
+  try {
+    await deleteDoc(doc(db, "eventos", id));
+    allEventos = allEventos.filter(e => e.id !== id);
+    renderEventos();
+    toast("Evento removido");
+  } catch (e) { toast("Erro", "erro"); }
+};
+
+$("btn-salvar-evento").addEventListener("click", async () => {
+  const id = $("ev-id").value;
+  const dados = {
+    titulo: $("ev-titulo").value.trim(),
+    data: $("ev-data").value,
+    hora: $("ev-hora").value.trim(),
+    modalidade: $("ev-modalidade").value,
+    local: $("ev-local").value.trim(),
+    descricao: $("ev-descricao").value.trim(),
+    linkInscricao: $("ev-link").value.trim(),
+    nivelMinimo: $("ev-nivel").value,
+  };
+  if (!dados.titulo || !dados.data) { mostrarErro("ev-erro", "Título e data obrigatórios"); return; }
+
+  $("btn-salvar-evento").disabled = true;
+  try {
+    if (id) {
+      await updateDoc(doc(db, "eventos", id), dados);
+      const idx = allEventos.findIndex(e => e.id === id);
+      if (idx >= 0) allEventos[idx] = { ...allEventos[idx], ...dados };
+      toast("Evento atualizado");
+    } else {
+      const ref = await addDoc(collection(db, "eventos"), { ...dados, criadoEm: serverTimestamp() });
+      allEventos.push({ id: ref.id, ...dados });
+      allEventos.sort((a, b) => new Date(a.data || 0) - new Date(b.data || 0));
+      toast("Evento criado");
+    }
+    fecharModal("modal-evento");
+    renderEventos();
+  } catch (e) { mostrarErro("ev-erro", e.message); }
+  $("btn-salvar-evento").disabled = false;
+});
+
+// === MATERIAIS ===
+function renderMateriais() {
+  const list = $("lista-materiais");
+  if (allMateriais.length === 0) {
+    list.innerHTML = `<div class="text-center py-8" style="color: var(--cream-dim);">Nenhum material cadastrado.</div>`;
+    return;
+  }
+  const tipoIcons = { 'pdf': '📄', 'planilha': '📊', 'doc': '📝', 'template': '✨', 'script': '🎯', 'outro': '📁' };
+  const niveisTxt = { gold: "Todos", esmeralda: "Esmeralda+", filmmaker: "Filmmaker" };
+  list.innerHTML = allMateriais.map(m => `
+    <div class="card p-5 flex items-center gap-4">
+      <div class="text-3xl shrink-0">${tipoIcons[(m.tipo||'pdf').toLowerCase()] || '📄'}</div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-1 text-[10px] uppercase tracking-widest" style="color: var(--cream-dim);">
+          ${m.categoria ? `<span class="gold-text font-semibold">${m.categoria}</span><span>·</span>` : ''}
+          <span>${niveisTxt[m.nivelMinimo] || 'Todos'}</span>
+        </div>
+        <h4 class="font-display text-lg">${m.titulo}</h4>
+      </div>
+      <a href="${m.linkDrive}" target="_blank" rel="noopener" class="p-2 rounded-lg hover:bg-white/5 transition" title="Abrir no Drive">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gold);"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      </a>
+      <button onclick="window.editarMaterial('${m.id}')" class="p-2 rounded-lg hover:bg-white/5 transition"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+      <button onclick="window.removerMaterial('${m.id}')" class="p-2 rounded-lg hover:bg-red-500/10 transition" style="color: #f87171;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/></svg></button>
+    </div>
+  `).join("");
+}
+
+window.editarMaterial = (id) => {
+  const m = allMateriais.find(x => x.id === id);
+  if (!m) return;
+  $("modal-material-titulo").textContent = "Editar material";
+  $("mat-id").value = id;
+  $("mat-link").value = m.linkDrive || "";
+  $("mat-titulo").value = m.titulo || "";
+  $("mat-descricao").value = m.descricao || "";
+  $("mat-categoria").value = m.categoria || "";
+  $("mat-tipo").value = m.tipo || "pdf";
+  $("mat-nivel").value = m.nivelMinimo || "gold";
+  abrirModal("modal-material");
+};
+
+window.removerMaterial = async (id) => {
+  if (!confirm("Remover esse material?")) return;
+  try {
+    await deleteDoc(doc(db, "materiais", id));
+    allMateriais = allMateriais.filter(m => m.id !== id);
+    renderMateriais();
+    toast("Material removido");
+  } catch (e) { toast("Erro", "erro"); }
+};
+
+$("btn-salvar-material").addEventListener("click", async () => {
+  const id = $("mat-id").value;
+  const dados = {
+    linkDrive: $("mat-link").value.trim(),
+    titulo: $("mat-titulo").value.trim(),
+    descricao: $("mat-descricao").value.trim(),
+    categoria: $("mat-categoria").value.trim(),
+    tipo: $("mat-tipo").value,
+    nivelMinimo: $("mat-nivel").value,
+  };
+  if (!dados.linkDrive || !dados.titulo) { mostrarErro("mat-erro", "Link e título obrigatórios"); return; }
+  if (!dados.linkDrive.includes("drive.google.com") && !dados.linkDrive.includes("docs.google.com")) {
+    mostrarErro("mat-erro", "Link precisa ser do Google Drive ou Google Docs");
+    return;
+  }
+
+  $("btn-salvar-material").disabled = true;
+  try {
+    if (id) {
+      await updateDoc(doc(db, "materiais", id), dados);
+      const idx = allMateriais.findIndex(m => m.id === id);
+      if (idx >= 0) allMateriais[idx] = { ...allMateriais[idx], ...dados };
+      toast("Material atualizado");
+    } else {
+      const ref = await addDoc(collection(db, "materiais"), { ...dados, criadoEm: serverTimestamp() });
+      allMateriais.unshift({ id: ref.id, ...dados });
+      toast("Material salvo");
+    }
+    fecharModal("modal-material");
+    renderMateriais();
+  } catch (e) { mostrarErro("mat-erro", e.message); }
+  $("btn-salvar-material").disabled = false;
+});
+
+// === MARCELLO ===
+function renderMarcello() {
+  const list = $("lista-marcello");
+  if (allMarcello.length === 0) {
+    list.innerHTML = `<div class="text-center py-8" style="color: var(--cream-dim);">Nenhuma mensagem postada. A primeira mensagem aparece destacada na home dos mentorados.</div>`;
+    return;
+  }
+  list.innerHTML = allMarcello.map((m, i) => `
+    <div class="card p-5 ${i === 0 ? 'border-2' : ''}" ${i === 0 ? 'style="border-color: var(--gold);"' : ''}>
+      <div class="flex items-start gap-4">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-2 text-[10px] uppercase tracking-widest" style="color: var(--cream-dim);">
+            ${i === 0 ? '<span class="gold-text font-semibold">Mensagem ativa</span><span>·</span>' : ''}
+            <span>${m.dataTexto || 'Sem data'}</span>
+            ${m.videoUrl ? '<span>·</span><span>🎬 Com vídeo</span>' : ''}
+          </div>
+          <h4 class="font-display text-lg mb-2">${m.titulo}</h4>
+          <p class="text-sm" style="color: var(--cream-dim); white-space: pre-wrap;">${(m.texto || '').slice(0, 200)}${(m.texto || '').length > 200 ? '...' : ''}</p>
+        </div>
+        <div class="flex gap-1 shrink-0">
+          <button onclick="window.editarMarcello('${m.id}')" class="p-2 rounded-lg hover:bg-white/5 transition"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <button onclick="window.removerMarcello('${m.id}')" class="p-2 rounded-lg hover:bg-red-500/10 transition" style="color: #f87171;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/></svg></button>
+        </div>
+      </div>
+    </div>
+  `).join("");
+}
+
+window.editarMarcello = (id) => {
+  const m = allMarcello.find(x => x.id === id);
+  if (!m) return;
+  $("modal-marcello-titulo").textContent = "Editar mensagem";
+  $("mc-id").value = id;
+  $("mc-titulo").value = m.titulo || "";
+  $("mc-texto").value = m.texto || "";
+  $("mc-video").value = m.videoUrl || "";
+  $("mc-data").value = m.dataTexto || "";
+  abrirModal("modal-marcello");
+};
+
+window.removerMarcello = async (id) => {
+  if (!confirm("Remover essa mensagem?")) return;
+  try {
+    await deleteDoc(doc(db, "marcello", id));
+    allMarcello = allMarcello.filter(m => m.id !== id);
+    renderMarcello();
+    toast("Mensagem removida");
+  } catch (e) { toast("Erro", "erro"); }
+};
+
+$("btn-salvar-marcello").addEventListener("click", async () => {
+  const id = $("mc-id").value;
+  const dados = {
+    titulo: $("mc-titulo").value.trim(),
+    texto: $("mc-texto").value.trim(),
+    videoUrl: $("mc-video").value.trim(),
+    dataTexto: $("mc-data").value.trim(),
+  };
+  if (!dados.titulo || !dados.texto) { mostrarErro("mc-erro", "Título e mensagem obrigatórios"); return; }
+
+  $("btn-salvar-marcello").disabled = true;
+  try {
+    if (id) {
+      await updateDoc(doc(db, "marcello", id), dados);
+      const idx = allMarcello.findIndex(m => m.id === id);
+      if (idx >= 0) allMarcello[idx] = { ...allMarcello[idx], ...dados };
+      toast("Mensagem atualizada");
+    } else {
+      const ref = await addDoc(collection(db, "marcello"), { ...dados, criadoEm: serverTimestamp() });
+      allMarcello.unshift({ id: ref.id, ...dados, criadoEm: { toMillis: () => Date.now() } });
+      toast("Mensagem postada");
+    }
+    fecharModal("modal-marcello");
+    renderMarcello();
+  } catch (e) { mostrarErro("mc-erro", e.message); }
+  $("btn-salvar-marcello").disabled = false;
+});
+
 // === HELPERS ===
 function mostrarErro(id, msg) {
   const el = $(id);
@@ -1090,12 +1613,28 @@ window.abrirModal = (id) => {
     $("mu-categoria").value = "Aviso";
     $("mu-nivel").value = "gold";
   }
+  if (id === "modal-evento" && !$("ev-id").value) {
+    $("modal-evento-titulo").textContent = "Novo evento";
+    document.querySelectorAll("#modal-evento input, #modal-evento select, #modal-evento textarea").forEach(el => el.value = "");
+    $("ev-modalidade").value = "online";
+    $("ev-nivel").value = "gold";
+  }
+  if (id === "modal-material" && !$("mat-id").value) {
+    $("modal-material-titulo").textContent = "Novo material";
+    document.querySelectorAll("#modal-material input, #modal-material select, #modal-material textarea").forEach(el => el.value = "");
+    $("mat-tipo").value = "pdf";
+    $("mat-nivel").value = "gold";
+  }
+  if (id === "modal-marcello" && !$("mc-id").value) {
+    $("modal-marcello-titulo").textContent = "Nova mensagem";
+    document.querySelectorAll("#modal-marcello input, #modal-marcello textarea").forEach(el => el.value = "");
+  }
   $(id).classList.remove("hidden");
 };
 window.fecharModal = (id) => {
   $(id).classList.add("hidden");
   // Limpa IDs ocultos pra próximo abrir ser "novo"
-  ["m-id", "c-id", "a-id", "mu-id"].forEach(i => { if ($(i)) $(i).value = ""; });
+  ["m-id", "c-id", "a-id", "mu-id", "ev-id", "mat-id", "mc-id"].forEach(i => { if ($(i)) $(i).value = ""; });
 };
 
 // Click fora do modal fecha
@@ -1121,6 +1660,25 @@ window.toggleSidebar = () => {
   $("sidebar").classList.toggle("open");
   $("sidebar-overlay").classList.toggle("open");
 };
+
+// Tema claro/escuro (padronizado com app.html)
+function aplicarTema(tema) {
+  document.documentElement.setAttribute('data-theme', tema);
+  const dark = document.getElementById("icon-tema-dark");
+  const light = document.getElementById("icon-tema-light");
+  if (dark && light) {
+    dark.classList.toggle("hidden", tema === "light");
+    light.classList.toggle("hidden", tema === "dark");
+  }
+}
+aplicarTema(localStorage.getItem("cd-theme") || "dark");
+
+document.getElementById("btn-tema").addEventListener("click", () => {
+  const atual = document.documentElement.getAttribute('data-theme');
+  const novo = atual === "light" ? "dark" : "light";
+  aplicarTema(novo);
+  localStorage.setItem("cd-theme", novo);
+});
 
 $("btn-sair").addEventListener("click", async () => {
   if (confirm("Deseja sair?")) {
