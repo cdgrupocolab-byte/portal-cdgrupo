@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin — Portal CD Grupo</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a1130">
+<link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icones/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icones/favicon-16.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -429,6 +436,50 @@
       <div>
         <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Nicho</label>
         <input id="m-nicho" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="Restaurante, Imobiliário...">
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Cidade</label>
+          <input id="m-cidade" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="Rio de Janeiro">
+        </div>
+        <div>
+          <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">Estado (UF)</label>
+          <select id="m-estado" class="input-field w-full px-4 py-3 rounded-xl text-sm">
+            <option value="" style="background: var(--navy-2);">—</option>
+            <option value="AC" style="background: var(--navy-2);">AC</option>
+            <option value="AL" style="background: var(--navy-2);">AL</option>
+            <option value="AP" style="background: var(--navy-2);">AP</option>
+            <option value="AM" style="background: var(--navy-2);">AM</option>
+            <option value="BA" style="background: var(--navy-2);">BA</option>
+            <option value="CE" style="background: var(--navy-2);">CE</option>
+            <option value="DF" style="background: var(--navy-2);">DF</option>
+            <option value="ES" style="background: var(--navy-2);">ES</option>
+            <option value="GO" style="background: var(--navy-2);">GO</option>
+            <option value="MA" style="background: var(--navy-2);">MA</option>
+            <option value="MT" style="background: var(--navy-2);">MT</option>
+            <option value="MS" style="background: var(--navy-2);">MS</option>
+            <option value="MG" style="background: var(--navy-2);">MG</option>
+            <option value="PA" style="background: var(--navy-2);">PA</option>
+            <option value="PB" style="background: var(--navy-2);">PB</option>
+            <option value="PR" style="background: var(--navy-2);">PR</option>
+            <option value="PE" style="background: var(--navy-2);">PE</option>
+            <option value="PI" style="background: var(--navy-2);">PI</option>
+            <option value="RJ" style="background: var(--navy-2);">RJ</option>
+            <option value="RN" style="background: var(--navy-2);">RN</option>
+            <option value="RS" style="background: var(--navy-2);">RS</option>
+            <option value="RO" style="background: var(--navy-2);">RO</option>
+            <option value="RR" style="background: var(--navy-2);">RR</option>
+            <option value="SC" style="background: var(--navy-2);">SC</option>
+            <option value="SP" style="background: var(--navy-2);">SP</option>
+            <option value="SE" style="background: var(--navy-2);">SE</option>
+            <option value="TO" style="background: var(--navy-2);">TO</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="text-[10px] uppercase tracking-widest font-semibold mb-2 block" style="color: var(--cream-dim);">🎬 Vídeo de boas-vindas (YouTube)</label>
+        <input id="m-video-bemvindo" class="input-field w-full px-4 py-3 rounded-xl text-sm" placeholder="https://youtu.be/..." >
+        <p class="text-[11px] mt-1" style="color: var(--cream-dim);">Vídeo personalizado do Marcello falando o nome do mentorado. Toca no primeiro login.</p>
       </div>
       <div class="grid grid-cols-2 gap-3">
         <div>
@@ -974,6 +1025,9 @@ window.editarMentorado = (id) => {
   $("m-nivel").value = m.nivel || "gold";
   $("m-status").value = m.status || "ativo";
   $("m-nicho").value = m.nicho || "";
+  $("m-cidade").value = m.cidade || "";
+  $("m-estado").value = m.estado || "";
+  $("m-video-bemvindo").value = m.videoBemVindo || "";
   $("m-entrada").value = m.entrouEm || "";
   $("m-vencimento").value = m.vencimento || "";
   $("campo-email-novo").style.display = "none";
@@ -1009,6 +1063,9 @@ $("btn-salvar-mentorado").addEventListener("click", async () => {
     nivel,
     status,
     nicho: $("m-nicho").value.trim(),
+    cidade: $("m-cidade").value.trim(),
+    estado: $("m-estado").value,
+    videoBemVindo: $("m-video-bemvindo").value.trim(),
     whatsapp: $("m-whatsapp").value.trim(),
     instagram: $("m-instagram").value.trim(),
     entrouEm: $("m-entrada").value,

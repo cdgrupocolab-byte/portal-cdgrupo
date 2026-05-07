@@ -1,0 +1,52 @@
+{
+  "name": "CD Grupo · Portal do Mentorado",
+  "short_name": "CD Grupo",
+  "description": "Portal exclusivo dos mentorados do CD Grupo. Conteúdos, networking, eventos e materiais.",
+  "start_url": "./app.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#050a1f",
+  "theme_color": "#0a1130",
+  "lang": "pt-BR",
+  "categories": ["education", "business", "productivity"],
+  "icons": [
+    {
+      "src": "icones/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icones/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icones/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icones/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Networking",
+      "short_name": "Network",
+      "url": "./app.html#networking",
+      "icons": [{ "src": "icones/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Conteúdos",
+      "short_name": "Aulas",
+      "url": "./app.html#conteudos",
+      "icons": [{ "src": "icones/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

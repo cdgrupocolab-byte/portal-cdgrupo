@@ -4,6 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Portal CD Grupo</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a1130">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CD Grupo">
+<link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icones/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icones/favicon-16.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -90,9 +100,202 @@
   @keyframes heroRise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
   .hero-sub { opacity: 0; animation: heroRise 1s cubic-bezier(0.22, 1, 0.36, 1) 0.6s forwards; }
   .hero-cta { opacity: 0; animation: heroRise 1s cubic-bezier(0.22, 1, 0.36, 1) 0.9s forwards; }
+  /* === PWA INSTALL BANNER === */
+  #pwa-install-banner {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(120%);
+    z-index: 90; background: linear-gradient(135deg, var(--navy-2), var(--navy));
+    border: 1px solid var(--gold); border-radius: 20px;
+    padding: 16px 20px; display: flex; align-items: center; gap: 14px;
+    max-width: calc(100% - 32px); width: 480px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    transition: transform .5s cubic-bezier(.22,1,.36,1);
+  }
+  #pwa-install-banner.show { transform: translateX(-50%) translateY(0); }
+  #pwa-install-banner .pwa-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces', serif; font-weight: 700; color: var(--navy); font-size: 16px;
+    flex-shrink: 0;
+  }
+  #pwa-install-banner .pwa-text { flex: 1; min-width: 0; }
+  #pwa-install-banner .pwa-title { font-weight: 600; font-size: 14px; color: var(--cream); }
+  #pwa-install-banner .pwa-sub { font-size: 12px; color: var(--cream-dim); margin-top: 2px; }
+  #pwa-install-banner .pwa-btn {
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    color: var(--navy); padding: 8px 16px; border-radius: 999px;
+    font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+    cursor: pointer; border: none; flex-shrink: 0;
+    transition: transform .2s;
+  }
+  #pwa-install-banner .pwa-btn:hover { transform: scale(1.05); }
+  #pwa-install-banner .pwa-close {
+    background: transparent; color: var(--cream-dim); border: none;
+    cursor: pointer; padding: 4px; flex-shrink: 0;
+  }
+  #pwa-install-banner .pwa-close:hover { color: var(--cream); }
+
+  /* Modal iOS instructions */
+  #pwa-ios-modal {
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(12px);
+    display: none; align-items: center; justify-content: center;
+    padding: 16px;
+  }
+  #pwa-ios-modal.show { display: flex; }
+  .pwa-ios-card {
+    background: linear-gradient(180deg, var(--navy-2), var(--navy));
+    border: 1px solid var(--border-strong); border-radius: 24px;
+    padding: 28px; max-width: 420px; width: 100%;
+    text-align: center;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+  }
+  .pwa-ios-step {
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(255,255,255,0.04); border-radius: 12px;
+    padding: 12px 14px; margin-bottom: 10px; text-align: left;
+  }
+  .pwa-ios-step-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    color: var(--navy); font-weight: 700; font-size: 13px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .pwa-ios-step-text { font-size: 13px; color: var(--cream); }
+
+
+  /* === SPLASH SCREEN === */
+  #splash-screen { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; transition: opacity .8s, visibility .8s; overflow: hidden; }
+  #splash-screen.fade-out { opacity: 0; visibility: hidden; }
+  .splash-bg { position: absolute; inset: 0; z-index: 0; }
+  .splash-bg.morning { background: linear-gradient(135deg, #fef3c7 0%, #fbbf24 40%, #f59e0b 100%); }
+  .splash-bg.day { background: linear-gradient(135deg, #dbeafe 0%, #60a5fa 50%, #2563eb 100%); }
+  .splash-bg.evening { background: linear-gradient(135deg, #fed7aa 0%, #f97316 40%, #c2410c 80%, #1e293b 100%); }
+  .splash-bg.night { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0a1130 100%); }
+  .splash-bg.night::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: radial-gradient(2px 2px at 20% 30%, white, transparent), radial-gradient(1px 1px at 60% 50%, white, transparent), radial-gradient(2px 2px at 80% 20%, white, transparent), radial-gradient(1px 1px at 30% 70%, white, transparent), radial-gradient(1px 1px at 90% 80%, white, transparent), radial-gradient(2px 2px at 50% 90%, white, transparent), radial-gradient(1px 1px at 10% 50%, white, transparent);
+    opacity: 0.6; animation: starsTwinkle 4s ease-in-out infinite;
+  }
+  @keyframes starsTwinkle { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }
+  .splash-content { position: relative; z-index: 2; text-align: center; padding: 32px; max-width: 90%; animation: splashRise 1s cubic-bezier(.22,1,.36,1); }
+  @keyframes splashRise { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+  .splash-emoji { font-size: clamp(3rem, 10vw, 6rem); margin-bottom: 24px; display: block; animation: emojiFloat 3s ease-in-out infinite; }
+  @keyframes emojiFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  .splash-greeting { font-family: 'Fraunces', serif; font-size: clamp(2rem, 6vw, 4rem); font-weight: 300; letter-spacing: -0.02em; margin-bottom: 12px; color: white; text-shadow: 0 2px 30px rgba(0,0,0,0.3); }
+  .splash-meta { font-size: 14px; text-transform: uppercase; letter-spacing: 0.3em; color: rgba(255,255,255,0.85); margin-bottom: 40px; font-weight: 500; }
+  .splash-btn { background: rgba(255,255,255,0.15); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 14px 36px; border-radius: 999px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.2em; font-weight: 600; cursor: pointer; transition: all .3s; }
+  .splash-btn:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
+
+  /* === ONBOARDING === */
+  #onboarding-screen { position: fixed; inset: 0; z-index: 250; background: #000; display: flex; align-items: center; justify-content: center; transition: opacity 1s; }
+  #onboarding-screen.fade-out { opacity: 0; pointer-events: none; }
+  .onb-container { text-align: center; max-width: 800px; padding: 32px; width: 100%; }
+  .onb-text { font-family: 'Fraunces', serif; font-weight: 300; color: #f5eedd; letter-spacing: -0.02em; line-height: 1.2; opacity: 0; transition: opacity 1.2s, transform 1.2s; transform: translateY(20px); font-size: clamp(1.8rem, 5vw, 3.5rem); }
+  .onb-text.show { opacity: 1; transform: none; }
+  .onb-text.hide { opacity: 0; transform: translateY(-20px); }
+  .onb-text em { font-style: italic; background: linear-gradient(135deg, #e9c46a, #d4a537); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .onb-video-wrap { width: 100%; aspect-ratio: 16/9; border-radius: 16px; overflow: hidden; box-shadow: 0 30px 80px rgba(212,165,55,0.3); border: 1px solid rgba(212,165,55,0.3); background: #000; opacity: 0; transition: opacity 1s; }
+  .onb-video-wrap.show { opacity: 1; }
+  .onb-cta { background: linear-gradient(135deg, #e9c46a, #d4a537); color: #050a1f; padding: 16px 48px; border-radius: 999px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.3em; font-weight: 700; cursor: pointer; border: none; margin-top: 40px; opacity: 0; transition: all .3s, opacity 1s; }
+  .onb-cta.show { opacity: 1; animation: pulseBtn 2s ease-in-out infinite; }
+  .onb-cta:hover { transform: scale(1.05); box-shadow: 0 20px 50px rgba(212,165,55,0.5); }
+  @keyframes pulseBtn { 0%, 100% { box-shadow: 0 0 0 0 rgba(212,165,55,0.4); } 50% { box-shadow: 0 0 0 20px rgba(212,165,55,0); } }
+  .onb-skip { position: absolute; top: 24px; right: 24px; color: rgba(245,238,221,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 0.2em; cursor: pointer; padding: 8px 16px; border-radius: 8px; border: 1px solid rgba(245,238,221,0.1); background: transparent; transition: all .3s; z-index: 251; }
+  .onb-skip:hover { color: white; border-color: rgba(245,238,221,0.3); }
+
+  /* === MAPA === */
+  .mapa-wrap { position: relative; background: linear-gradient(180deg, var(--bg-card-from), var(--bg-card-to)); border: 1px solid var(--border-strong); border-radius: 24px; padding: 24px; overflow: hidden; }
+  .mapa-svg-wrap { position: relative; width: 100%; max-width: 700px; margin: 0 auto; }
+  .mapa-svg { width: 100%; height: auto; display: block; }
+  .mapa-svg path { fill: rgba(255,255,255,0.04); stroke: rgba(212,165,55,0.25); stroke-width: 0.8; transition: fill .3s; }
+  [data-theme="light"] .mapa-svg path { fill: rgba(0,0,0,0.04); stroke: rgba(212,165,55,0.4); }
+  .mapa-svg path:hover { fill: rgba(212,165,55,0.1); }
+  .mapa-pin { position: absolute; width: 14px; height: 14px; border-radius: 50%; cursor: pointer; transform: translate(-50%, -50%); transition: transform .3s; z-index: 5; animation: pinPulse 2s infinite; }
+  .mapa-pin.gold { background: #fbbf24; box-shadow: 0 0 10px rgba(251,191,36,0.6); }
+  .mapa-pin.esmeralda { background: #34d399; box-shadow: 0 0 10px rgba(52,211,153,0.6); }
+  .mapa-pin.filmmaker { background: #a855f7; box-shadow: 0 0 10px rgba(168,85,247,0.6); }
+  .mapa-pin:hover { transform: translate(-50%, -50%) scale(1.6); z-index: 10; }
+  @keyframes pinPulse { 0%, 100% { box-shadow: 0 0 0 0 currentColor; } 70% { box-shadow: 0 0 0 8px transparent; } }
+  .mapa-tooltip { position: absolute; background: var(--bg-card-from); border: 1px solid var(--gold); border-radius: 12px; padding: 10px 14px; color: var(--text); font-size: 12px; pointer-events: none; transform: translate(-50%, -120%); white-space: nowrap; box-shadow: 0 10px 30px rgba(0,0,0,0.4); z-index: 20; opacity: 0; transition: opacity .2s; }
+  .mapa-tooltip.show { opacity: 1; }
+  .mapa-filtros { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .mapa-filtro { padding: 8px 16px; border-radius: 999px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 600; cursor: pointer; border: 1px solid var(--border-strong); background: transparent; color: var(--text-dim); transition: all .25s; }
+  .mapa-filtro:hover { color: var(--text); }
+  .mapa-filtro.active { background: linear-gradient(135deg, var(--gold-light), var(--gold)); color: var(--navy); border-color: transparent; }
+  .mapa-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .mapa-stat { background: rgba(212,165,55,0.05); border: 1px solid var(--border); border-radius: 12px; padding: 14px; text-align: center; }
+  .mapa-stat-num { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 300; color: var(--gold); }
+  .mapa-stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-dim); margin-top: 4px; }
 </style>
 </head>
 <body class="min-h-screen flex">
+
+<!-- PWA: Banner de instalação (Android/Chrome) -->
+<div id="pwa-install-banner">
+  <div class="pwa-icon">CD</div>
+  <div class="pwa-text">
+    <div class="pwa-title">Instale o CD Grupo</div>
+    <div class="pwa-sub">Acesso rápido direto da sua tela inicial</div>
+  </div>
+  <button class="pwa-btn" id="pwa-install-btn">Instalar</button>
+  <button class="pwa-close" id="pwa-close-btn" title="Fechar">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+  </button>
+</div>
+
+<!-- PWA: Modal instruções iOS -->
+<div id="pwa-ios-modal">
+  <div class="pwa-ios-card">
+    <div class="text-4xl mb-3">📱</div>
+    <h3 class="font-display text-2xl mb-2">Instale o CD Grupo</h3>
+    <p class="text-sm mb-5" style="color: var(--cream-dim);">Pra instalar no seu iPhone, é fácil:</p>
+    <div class="pwa-ios-step">
+      <div class="pwa-ios-step-num">1</div>
+      <div class="pwa-ios-step-text">Toca no botão de <strong>compartilhar</strong> <span style="color: var(--gold);">⬆️</span> embaixo do Safari</div>
+    </div>
+    <div class="pwa-ios-step">
+      <div class="pwa-ios-step-num">2</div>
+      <div class="pwa-ios-step-text">Rola e toca em <strong>"Adicionar à Tela de Início"</strong></div>
+    </div>
+    <div class="pwa-ios-step">
+      <div class="pwa-ios-step-num">3</div>
+      <div class="pwa-ios-step-text">Toca em <strong>"Adicionar"</strong> no canto direito</div>
+    </div>
+    <button onclick="document.getElementById('pwa-ios-modal').classList.remove('show')" class="btn-gold w-full py-3 rounded-xl text-sm mt-5">Entendi</button>
+  </div>
+</div>
+
+
+<!-- ONBOARDING CINEMATOGRÁFICO (1ª vez) -->
+<div id="onboarding-screen" style="display:none;">
+  <button class="onb-skip" onclick="window.pularOnboarding()">Pular</button>
+  <div class="onb-container">
+    <div id="onb-step1" class="onb-text"></div>
+    <div id="onb-step2" class="onb-text" style="display:none;"></div>
+    <div id="onb-step3" class="onb-text" style="display:none;"></div>
+    <div id="onb-step4" class="onb-text" style="display:none;"></div>
+    <div id="onb-step5" class="onb-text" style="display:none;"></div>
+    <div id="onb-video-step" style="display:none;">
+      <div id="onb-video-wrap" class="onb-video-wrap">
+        <iframe id="onb-iframe" width="100%" height="100%" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </div>
+    </div>
+    <button id="onb-cta" class="onb-cta" onclick="window.finalizarOnboarding()">Bora</button>
+  </div>
+</div>
+
+<!-- SPLASH SCREEN (1x por dia) -->
+<div id="splash-screen" style="display:none;">
+  <div id="splash-bg" class="splash-bg night"></div>
+  <div class="splash-content">
+    <div id="splash-emoji" class="splash-emoji">🌙</div>
+    <h1 id="splash-greeting" class="splash-greeting">Boa noite</h1>
+    <div id="splash-meta" class="splash-meta">— · —</div>
+    <button class="splash-btn" onclick="window.fecharSplash()">Entrar</button>
+  </div>
+</div>
+
 
 <!-- Loading inicial -->
 <div id="loading-screen" class="fixed inset-0 z-[100] flex items-center justify-center" style="background: var(--navy);">
@@ -130,6 +333,10 @@
     <div data-tab="networking" class="nav-item">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/></svg>
       Networking
+    </div>
+    <div data-tab="mapa" class="nav-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      Mapa
     </div>
     <div data-tab="conteudos" class="nav-item">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -312,6 +519,34 @@
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 stagger" id="net-grid">
         <div class="text-sm col-span-3 text-center py-8" style="color: var(--text-dim);">Nenhum mentorado ainda.</div>
+      </div>
+    </section>
+
+    <!-- MAPA -->
+    <section id="tab-mapa" class="tab-content hidden">
+      <div class="mb-8">
+        <div class="text-[11px] uppercase tracking-[0.3em] gold-text font-semibold mb-3">Mapa do Brasil</div>
+        <h1 class="font-display text-4xl md:text-6xl font-light leading-tight mb-4">Onde a gente <em class="italic gold-text">tá construindo</em></h1>
+        <p class="max-w-xl text-sm md:text-base" style="color: var(--text-dim);">Cada ponto é um mentorado. Passa o mouse pra ver quem é.</p>
+      </div>
+
+      <div class="mapa-stats" id="mapa-stats"></div>
+
+      <div class="mapa-filtros">
+        <button data-nivel="todos" class="mapa-filtro active">Todos</button>
+        <button data-nivel="gold" class="mapa-filtro">Gold</button>
+        <button data-nivel="esmeralda" class="mapa-filtro">Esmeralda</button>
+        <button data-nivel="filmmaker" class="mapa-filtro">Filmmaker</button>
+      </div>
+
+      <div class="mapa-wrap">
+        <div class="mapa-svg-wrap" id="mapa-svg-wrap">
+          <div id="mapa-loading" class="text-center py-20" style="color: var(--text-dim);">
+            <svg class="spinner w-8 h-8 mx-auto mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gold);"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+            <div class="text-xs uppercase tracking-widest">Carregando mapa...</div>
+          </div>
+        </div>
+        <div id="mapa-tooltip" class="mapa-tooltip"></div>
       </div>
     </section>
 
@@ -673,6 +908,14 @@ onAuthStateChanged(auth, async (user) => {
   await carregarDados();
   // Esconde loading
   $("loading-screen").style.display = "none";
+
+  // Mostra onboarding (se for primeira vez) OU splash screen
+  const jaViuOnboarding = localStorage.getItem(`cd-onboarding-${currentUser.uid}`);
+  if (!jaViuOnboarding && !isAdmin) {
+    mostrarOnboarding();
+  } else {
+    mostrarSplashScreen();
+  }
 });
 
 function atualizarHeader() {
@@ -703,6 +946,280 @@ function atualizarHeader() {
 function podeVer(nivelMinimo) {
   if (isAdmin) return true;
   return NIVEIS_HIERARQUIA[userNivel] >= NIVEIS_HIERARQUIA[nivelMinimo || "gold"];
+}
+
+// ============ SPLASH SCREEN ============
+async function mostrarSplashScreen() {
+  if (isAdmin) return; // Admin pula splash
+  const hoje = new Date().toISOString().slice(0, 10);
+  const ultimaSplash = localStorage.getItem("cd-splash-data");
+  if (ultimaSplash === hoje) return; // Já mostrou hoje
+
+  const agora = new Date();
+  const hora = agora.getHours();
+  const periodo = hora < 6 ? "night" : hora < 12 ? "morning" : hora < 18 ? "day" : hora < 22 ? "evening" : "night";
+  const greetings = {
+    morning: { texto: "Bom dia", emoji: "☀️" },
+    day: { texto: "Boa tarde", emoji: "🌤️" },
+    evening: { texto: "Boa tarde", emoji: "🌅" },
+    night: { texto: "Boa noite", emoji: "🌙" }
+  };
+  const g = greetings[periodo];
+  const nome = (userData.nome || "").split(" ")[0];
+  const cidade = userData.cidade || "";
+  const estado = userData.estado || "";
+  const horaFmt = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+  // Tenta pegar clima (API grátis Open-Meteo, sem necessidade de chave)
+  let temperatura = "";
+  if (cidade) {
+    try {
+      // Geocoding grátis
+      const geo = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cidade)}&count=1&language=pt&country=BR`).then(r => r.json());
+      if (geo.results && geo.results[0]) {
+        const lat = geo.results[0].latitude;
+        const lon = geo.results[0].longitude;
+        const clima = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m`).then(r => r.json());
+        if (clima.current) {
+          temperatura = `${Math.round(clima.current.temperature_2m)}°C`;
+        }
+      }
+    } catch (e) { console.log("Clima:", e); }
+  }
+
+  // Monta meta
+  const metaParts = [];
+  if (cidade && estado) metaParts.push(`${cidade}, ${estado}`);
+  metaParts.push(horaFmt);
+  if (temperatura) metaParts.push(temperatura);
+  const meta = metaParts.join(" · ");
+
+  $("splash-bg").className = `splash-bg ${periodo}`;
+  $("splash-emoji").textContent = g.emoji;
+  $("splash-greeting").textContent = nome ? `${g.texto}, ${nome}` : g.texto;
+  $("splash-meta").textContent = meta;
+  $("splash-screen").style.display = "flex";
+
+  // Marca que mostrou hoje
+  localStorage.setItem("cd-splash-data", hoje);
+}
+
+window.fecharSplash = () => {
+  $("splash-screen").classList.add("fade-out");
+  setTimeout(() => $("splash-screen").style.display = "none", 800);
+};
+
+// ============ ONBOARDING CINEMATOGRÁFICO ============
+async function mostrarOnboarding() {
+  if (isAdmin) return;
+  // Já viu antes?
+  const jaViu = localStorage.getItem(`cd-onboarding-${currentUser.uid}`);
+  if (jaViu) return;
+
+  const nome = (userData.nome || "").split(" ")[0];
+  const total = allMentorados.length || 0;
+  const cidades = new Set(allMentorados.filter(m => m.cidade).map(m => m.cidade)).size;
+  const nichos = new Set(allMentorados.filter(m => m.nicho).map(m => m.nicho)).size;
+  const videoBemVindo = userData.videoBemVindo;
+
+  // Pula splash se onboarding vai rodar
+  $("splash-screen").style.display = "none";
+
+  $("onboarding-screen").style.display = "flex";
+
+  const steps = [
+    `Bem-vindo, <em>${nome}</em>.`,
+    "Você acaba de entrar no time.",
+    total > 0 ? `${total} ${total === 1 ? 'pessoa está construindo' : 'pessoas estão construindo'} aqui.` : "Aqui você vai construir junto.",
+    cidades > 1 ? `Em ${cidades} cidades.` : (nichos > 1 ? `Em ${nichos} nichos diferentes.` : "Em todo o Brasil."),
+    "Mas a partir de agora, isso é com <em>você</em>."
+  ];
+
+  // Mostrar steps em sequência
+  for (let i = 0; i < steps.length; i++) {
+    const stepEl = $(`onb-step${i + 1}`);
+    stepEl.style.display = "block";
+    stepEl.innerHTML = steps[i];
+    await sleep(100);
+    stepEl.classList.add("show");
+    await sleep(2200);
+    stepEl.classList.remove("show");
+    stepEl.classList.add("hide");
+    await sleep(800);
+    stepEl.style.display = "none";
+  }
+
+  // Vídeo personalizado (se tiver)
+  const embed = getYouTubeEmbed(videoBemVindo);
+  if (embed) {
+    $("onb-video-step").style.display = "block";
+    $("onb-iframe").src = embed;
+    await sleep(100);
+    $("onb-video-wrap").classList.add("show");
+    // Espera ~30s ou clique no CTA pra prosseguir
+    await sleep(2000);
+  }
+
+  // Mostrar CTA
+  $("onb-cta").style.display = "inline-block";
+  await sleep(100);
+  $("onb-cta").classList.add("show");
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+window.finalizarOnboarding = () => {
+  localStorage.setItem(`cd-onboarding-${currentUser.uid}`, "1");
+  $("onb-iframe").src = ""; // para o vídeo
+  $("onboarding-screen").classList.add("fade-out");
+  setTimeout(() => {
+    $("onboarding-screen").style.display = "none";
+    // Depois do onboarding, mostra splash se for o caso
+    mostrarSplashScreen();
+  }, 1000);
+};
+
+window.pularOnboarding = () => {
+  localStorage.setItem(`cd-onboarding-${currentUser.uid}`, "1");
+  $("onb-iframe").src = "";
+  $("onboarding-screen").style.display = "none";
+  mostrarSplashScreen();
+};
+
+// ============ MAPA ============
+let mapaFiltroNivel = "todos";
+
+// Coordenadas aproximadas das principais cidades brasileiras (lat, lng)
+// pra plotar pinos sem precisar geocodar
+const CIDADES_COORDS = {
+  "rio de janeiro,rj": [-22.9, -43.2], "são paulo,sp": [-23.5, -46.6], "sao paulo,sp": [-23.5, -46.6],
+  "belo horizonte,mg": [-19.9, -43.9], "brasília,df": [-15.7, -47.9], "brasilia,df": [-15.7, -47.9],
+  "salvador,ba": [-12.9, -38.5], "fortaleza,ce": [-3.7, -38.5], "recife,pe": [-8.0, -34.8],
+  "manaus,am": [-3.1, -60.0], "curitiba,pr": [-25.4, -49.2], "porto alegre,rs": [-30.0, -51.2],
+  "florianópolis,sc": [-27.6, -48.5], "florianopolis,sc": [-27.6, -48.5],
+  "vitória,es": [-20.3, -40.3], "vitoria,es": [-20.3, -40.3],
+  "goiânia,go": [-16.7, -49.3], "goiania,go": [-16.7, -49.3],
+  "natal,rn": [-5.8, -35.2], "joão pessoa,pb": [-7.1, -34.8], "joao pessoa,pb": [-7.1, -34.8],
+  "maceió,al": [-9.7, -35.7], "maceio,al": [-9.7, -35.7],
+  "aracaju,se": [-10.9, -37.1], "teresina,pi": [-5.1, -42.8],
+  "são luís,ma": [-2.5, -44.3], "sao luis,ma": [-2.5, -44.3],
+  "belém,pa": [-1.5, -48.5], "belem,pa": [-1.5, -48.5],
+  "boa vista,rr": [2.8, -60.7], "macapá,ap": [0.0, -51.1], "macapa,ap": [0.0, -51.1],
+  "rio branco,ac": [-9.9, -67.8], "porto velho,ro": [-8.8, -63.9],
+  "palmas,to": [-10.2, -48.3], "cuiabá,mt": [-15.6, -56.1], "cuiaba,mt": [-15.6, -56.1],
+  "campo grande,ms": [-20.5, -54.6],
+  "niterói,rj": [-22.9, -43.1], "niteroi,rj": [-22.9, -43.1],
+  "campinas,sp": [-22.9, -47.1], "santos,sp": [-23.96, -46.3],
+  "guarulhos,sp": [-23.4, -46.5], "osasco,sp": [-23.5, -46.8],
+  "são bernardo,sp": [-23.7, -46.6], "ribeirão preto,sp": [-21.2, -47.8],
+  "ribeirao preto,sp": [-21.2, -47.8],
+  "uberlândia,mg": [-18.9, -48.3], "uberlandia,mg": [-18.9, -48.3],
+  "juiz de fora,mg": [-21.8, -43.4], "londrina,pr": [-23.3, -51.2],
+  "maringá,pr": [-23.4, -51.9], "maringa,pr": [-23.4, -51.9],
+  "joinville,sc": [-26.3, -48.8], "blumenau,sc": [-26.9, -49.1],
+  "caxias do sul,rs": [-29.2, -51.2], "feira de santana,ba": [-12.3, -38.9],
+  "ilhéus,ba": [-14.8, -39.0], "ilheus,ba": [-14.8, -39.0],
+  "petrolina,pe": [-9.4, -40.5], "olinda,pe": [-8.0, -34.9],
+  "caruaru,pe": [-8.3, -35.97], "campina grande,pb": [-7.2, -35.9]
+};
+
+// Limites do mapa do Brasil em lat/lng
+const MAPA_BOUNDS = { latMin: -33.7, latMax: 5.3, lngMin: -73.9, lngMax: -34.7 };
+
+function latLngToPercent(lat, lng) {
+  // Converte lat/lng pra % na imagem
+  const x = ((lng - MAPA_BOUNDS.lngMin) / (MAPA_BOUNDS.lngMax - MAPA_BOUNDS.lngMin)) * 100;
+  const y = ((MAPA_BOUNDS.latMax - lat) / (MAPA_BOUNDS.latMax - MAPA_BOUNDS.latMin)) * 100;
+  return { x, y };
+}
+
+function getCoordsCidade(cidade, estado) {
+  if (!cidade || !estado) return null;
+  const key = `${cidade.toLowerCase().trim()},${estado.toLowerCase().trim()}`;
+  return CIDADES_COORDS[key] || null;
+}
+
+async function inicializarMapa() {
+  const wrap = $("mapa-svg-wrap");
+  if (!wrap) return;
+
+  // Carrega SVG do mapa do Brasil de uma CDN (simpleMaps ou similar)
+  // Usar imagem PNG simples do Brasil como fundo + plotar pinos por cima
+  wrap.innerHTML = `
+    <div style="position: relative; width: 100%;">
+      <svg viewBox="0 0 600 700" class="mapa-svg" id="mapa-svg-el">
+        <!-- Brasil simplificado em SVG path -->
+        <path d="M 280 80 L 320 70 L 360 85 L 400 95 L 430 110 L 450 135 L 470 165 L 480 195 L 470 220 L 450 240 L 470 260 L 490 275 L 510 290 L 520 310 L 510 340 L 495 365 L 480 390 L 470 415 L 460 445 L 470 475 L 480 500 L 475 525 L 465 545 L 445 560 L 420 570 L 395 575 L 370 580 L 345 590 L 320 600 L 295 605 L 270 610 L 250 615 L 230 605 L 215 585 L 205 560 L 200 535 L 195 510 L 190 485 L 185 460 L 180 435 L 170 410 L 155 385 L 140 360 L 125 340 L 110 325 L 95 310 L 85 290 L 80 270 L 85 250 L 95 230 L 110 215 L 130 205 L 150 195 L 170 185 L 190 175 L 210 160 L 230 145 L 245 125 L 255 105 L 270 90 Z" fill="rgba(255,255,255,0.04)" stroke="rgba(212,165,55,0.3)" stroke-width="1.5"/>
+      </svg>
+      <div id="mapa-pins" style="position: absolute; inset: 0; pointer-events: none;"></div>
+    </div>
+  `;
+
+  renderMapaPins();
+  setupMapaFiltros();
+}
+
+function setupMapaFiltros() {
+  document.querySelectorAll(".mapa-filtro").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".mapa-filtro").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      mapaFiltroNivel = btn.dataset.nivel;
+      renderMapaPins();
+    });
+  });
+}
+
+function renderMapaPins() {
+  const pinsContainer = $("mapa-pins");
+  const tooltip = $("mapa-tooltip");
+  if (!pinsContainer) return;
+
+  // Filtrar mentorados
+  let mentList = allMentorados.filter(m => m.cidade && m.estado);
+  if (mapaFiltroNivel !== "todos") {
+    mentList = mentList.filter(m => m.nivel === mapaFiltroNivel);
+  }
+
+  // Stats
+  const stats = $("mapa-stats");
+  if (stats) {
+    const total = mentList.length;
+    const totalCidades = new Set(mentList.map(m => `${m.cidade},${m.estado}`)).size;
+    const totalEstados = new Set(mentList.map(m => m.estado)).size;
+    stats.innerHTML = `
+      <div class="mapa-stat"><div class="mapa-stat-num">${total}</div><div class="mapa-stat-label">Mentorados</div></div>
+      <div class="mapa-stat"><div class="mapa-stat-num">${totalCidades}</div><div class="mapa-stat-label">Cidades</div></div>
+      <div class="mapa-stat"><div class="mapa-stat-num">${totalEstados}</div><div class="mapa-stat-label">Estados</div></div>
+    `;
+  }
+
+  // Plotar pinos
+  pinsContainer.innerHTML = "";
+  mentList.forEach(m => {
+    const coords = getCoordsCidade(m.cidade, m.estado);
+    if (!coords) return;
+    const { x, y } = latLngToPercent(coords[0], coords[1]);
+    const pin = document.createElement("div");
+    pin.className = `mapa-pin ${m.nivel || 'gold'}`;
+    pin.style.left = `${x}%`;
+    pin.style.top = `${y}%`;
+    pin.style.pointerEvents = "auto";
+    pin.addEventListener("mouseenter", (e) => {
+      tooltip.innerHTML = `<strong>${m.nome}</strong><br><span style="color: var(--text-dim); font-size: 11px;">${m.cidade}, ${m.estado}${m.nicho ? ' · ' + m.nicho : ''}</span>`;
+      tooltip.style.left = `${x}%`;
+      tooltip.style.top = `${y}%`;
+      tooltip.classList.add("show");
+    });
+    pin.addEventListener("mouseleave", () => tooltip.classList.remove("show"));
+    if (m.whatsapp) {
+      pin.addEventListener("click", () => {
+        const tel = m.whatsapp.replace(/\D/g, "");
+        window.open(`https://wa.me/${tel}`, "_blank");
+      });
+    }
+    pinsContainer.appendChild(pin);
+  });
 }
 
 async function carregarDados() {
@@ -1208,12 +1725,19 @@ function renderPerfil() {
 }
 
 // Tab switcher
+let mapaJaInicializado = false;
 function goTo(tab) {
   document.querySelectorAll(".nav-item").forEach(n => n.classList.toggle("active", n.dataset.tab === tab));
   document.querySelectorAll('[id^="tab-"]').forEach(s => s.classList.add("hidden"));
   $("tab-"+tab).classList.remove("hidden");
   if (window.innerWidth < 1024) toggleSidebar();
   window.scrollTo({top:0, behavior:"smooth"});
+
+  // Inicializar mapa lazy (só na primeira visita)
+  if (tab === "mapa" && !mapaJaInicializado) {
+    mapaJaInicializado = true;
+    inicializarMapa();
+  }
 }
 window.goTo = goTo;
 window.abrirVideo = abrirVideo;
@@ -1257,6 +1781,100 @@ $("btn-sair").addEventListener("click", async () => {
     window.location.href = "index.html";
   }
 });
+</script>
+
+<!-- PWA: registrar Service Worker, prompt instalação, push -->
+<script>
+(function pwaInit() {
+  // 1. Registrar Service Worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('[PWA] Service Worker registrado:', reg.scope))
+        .catch(err => console.warn('[PWA] Falha ao registrar SW:', err));
+    });
+  }
+
+  // 2. Detectar se já tá instalado (display-mode standalone = rodando como app)
+  const jaInstalado = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  if (jaInstalado) {
+    console.log('[PWA] Rodando como app instalado ✓');
+    return; // não mostra prompt se já instalou
+  }
+
+  // 3. Detectar iOS (Safari não tem prompt automático)
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isStandaloneIOS = window.navigator.standalone === true;
+
+  // 4. Verificar se usuário já recusou recentemente (dispensar por 7 dias)
+  const dispensadoEm = localStorage.getItem('cd-pwa-dispensado');
+  if (dispensadoEm) {
+    const dias = (Date.now() - parseInt(dispensadoEm)) / (1000 * 60 * 60 * 24);
+    if (dias < 7) return; // não mostra ainda
+  }
+
+  const banner = document.getElementById('pwa-install-banner');
+  const btnInstall = document.getElementById('pwa-install-btn');
+  const btnClose = document.getElementById('pwa-close-btn');
+  const iosModal = document.getElementById('pwa-ios-modal');
+
+  // 5. Caminho iOS (Safari) - mostrar modal de instruções
+  if (isIOS && !isStandaloneIOS) {
+    setTimeout(() => banner.classList.add('show'), 4000);
+    btnInstall.addEventListener('click', () => {
+      iosModal.classList.add('show');
+      banner.classList.remove('show');
+    });
+    btnClose.addEventListener('click', () => {
+      banner.classList.remove('show');
+      localStorage.setItem('cd-pwa-dispensado', Date.now().toString());
+    });
+    return;
+  }
+
+  // 6. Caminho Android/Chrome/Edge - usar prompt nativo
+  let deferredPrompt = null;
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    // Mostrar banner depois de 4s pra não atrapalhar primeira impressão
+    setTimeout(() => banner.classList.add('show'), 4000);
+  });
+
+  btnInstall.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log('[PWA] Usuário escolheu:', outcome);
+    deferredPrompt = null;
+    banner.classList.remove('show');
+    if (outcome === 'dismissed') {
+      localStorage.setItem('cd-pwa-dispensado', Date.now().toString());
+    }
+  });
+
+  btnClose.addEventListener('click', () => {
+    banner.classList.remove('show');
+    localStorage.setItem('cd-pwa-dispensado', Date.now().toString());
+  });
+
+  // 7. Quando instala, esconde banner
+  window.addEventListener('appinstalled', () => {
+    banner.classList.remove('show');
+    localStorage.removeItem('cd-pwa-dispensado');
+    console.log('[PWA] Instalado com sucesso ✓');
+  });
+
+  // 8. Push Notifications (pedir permissão depois que o user já tá engajado, não na cara)
+  setTimeout(async () => {
+    if (!('Notification' in window) || !('serviceWorker' in navigator)) return;
+    if (Notification.permission === 'default') {
+      // Não força - só prepara. Pra ativar de fato é via FCM no admin.
+      console.log('[PWA] Permissão de notificação ainda não pedida (pedir só quando útil)');
+    }
+  }, 30000); // 30s após login
+})();
 </script>
 
 </body>
