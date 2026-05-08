@@ -227,6 +227,188 @@
   .mapa-stat { background: rgba(212,165,55,0.05); border: 1px solid var(--border); border-radius: 12px; padding: 14px; text-align: center; }
   .mapa-stat-num { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 300; color: var(--gold); }
   .mapa-stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-dim); margin-top: 4px; }
+  /* === ENGAJAMENTO AO VIVO === */
+  .live-banner {
+    background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(239,68,68,0.05));
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 16px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 12px;
+    animation: liveBannerPulse 3s ease-in-out infinite;
+  }
+  @keyframes liveBannerPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.2); }
+    50% { box-shadow: 0 0 0 12px rgba(239,68,68,0); }
+  }
+  .live-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #ef4444;
+    box-shadow: 0 0 0 0 rgba(239,68,68,0.7);
+    animation: liveDotPulse 1.5s infinite;
+  }
+  @keyframes liveDotPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.7); }
+    70% { box-shadow: 0 0 0 8px rgba(239,68,68,0); }
+  }
+
+  .post-card {
+    background: linear-gradient(180deg, var(--bg-card-from), var(--bg-card-to));
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all .3s;
+    animation: postFadeIn .5s cubic-bezier(.22,1,.36,1);
+  }
+  .post-card:hover {
+    border-color: rgba(212,165,55,0.3);
+    transform: translateY(-2px);
+  }
+  @keyframes postFadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .post-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 18px 12px;
+  }
+  .post-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: linear-gradient(135deg, #4a5fc1, #1e40af);
+    background-size: cover; background-position: center;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-family: 'Fraunces', serif; font-weight: 600; font-size: 16px;
+    flex-shrink: 0;
+  }
+  .post-meta { flex: 1; min-width: 0; }
+  .post-author { font-weight: 600; font-size: 14px; color: var(--text); }
+  .post-time {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--text-dim); margin-top: 2px;
+  }
+  .post-time .new-tag {
+    color: #ef4444; font-weight: 700; margin-left: 6px;
+  }
+
+  .post-image {
+    width: 100%; aspect-ratio: 1 / 1;
+    background-color: #000;
+    background-size: cover; background-position: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .post-image-loading {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, var(--navy-3), #000);
+  }
+  .post-image-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.7));
+    display: flex; align-items: flex-end;
+    padding: 18px;
+    opacity: 0; transition: opacity .3s;
+  }
+  .post-image:hover .post-image-overlay { opacity: 1; }
+  .post-image-overlay .insta-btn {
+    background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #bc1888);
+    color: white; padding: 10px 20px; border-radius: 999px;
+    font-size: 13px; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+
+  .post-caption {
+    padding: 14px 18px 18px;
+    font-size: 13px; line-height: 1.5;
+    color: var(--text-dim);
+  }
+  .post-actions {
+    display: flex; gap: 8px;
+    padding: 0 18px 18px;
+  }
+  .post-action-btn {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 12px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    text-align: center;
+    transition: all .25s;
+    cursor: pointer;
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    text-decoration: none;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .post-action-btn.primary {
+    background: linear-gradient(135deg, #f09433, #dc2743 60%, #bc1888);
+    border-color: transparent;
+    color: white;
+  }
+  .post-action-btn:hover { transform: translateY(-1px); }
+
+  .compartilhar-card {
+    background: linear-gradient(135deg, rgba(212,165,55,0.08), rgba(220,39,67,0.05));
+    border: 1px solid rgba(212,165,55,0.25);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+  .compartilhar-input-wrap {
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .compartilhar-input {
+    flex: 1; min-width: 0;
+    background: var(--input-bg);
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-size: 14px;
+    transition: all .25s;
+  }
+  .compartilhar-input:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 4px rgba(212,165,55,0.1);
+  }
+  .compartilhar-btn {
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    color: var(--navy);
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    cursor: pointer; border: none;
+    transition: all .3s;
+    flex-shrink: 0;
+  }
+  .compartilhar-btn:hover { transform: translateY(-1px); box-shadow: 0 12px 30px -10px rgba(212,165,55,0.5); }
+  .compartilhar-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .filtros-aovivo { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .filtro-aovivo {
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    color: var(--text-dim);
+    transition: all .25s;
+  }
+  .filtro-aovivo:hover { color: var(--text); }
+  .filtro-aovivo.active {
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    color: var(--navy);
+    border-color: transparent;
+  }
+
 </style>
 </head>
 <body class="min-h-screen flex">
@@ -337,6 +519,14 @@
     <div data-tab="mapa" class="nav-item">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
       Mapa
+    </div>
+    <div data-tab="aovivo" class="nav-item">
+      <span class="relative flex h-2.5 w-2.5">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style="background: #ef4444;"></span>
+        <span class="relative inline-flex rounded-full h-2.5 w-2.5" style="background: #ef4444;"></span>
+      </span>
+      Ao Vivo
+      <span id="badge-aovivo" class="hidden ml-auto text-[9px] font-bold px-1.5 py-0.5 rounded-full" style="background: #ef4444; color: white;">0</span>
     </div>
     <div data-tab="conteudos" class="nav-item">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -501,6 +691,21 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-5" id="home-latest">
         <div class="text-sm col-span-3 text-center py-8" style="color: var(--text-dim);">Nenhum conteúdo ainda. Em breve.</div>
       </div>
+
+      <!-- Card Engajamento Ao Vivo na home -->
+      <div id="home-aovivo-wrap" class="hidden mt-12">
+        <div class="flex items-center justify-between mb-5">
+          <div>
+            <div class="text-[11px] uppercase tracking-[0.3em] font-semibold mb-1 inline-flex items-center gap-2" style="color: #ef4444;">
+              <span class="live-dot"></span>
+              Engajamento ao vivo
+            </div>
+            <h2 class="font-display text-2xl md:text-3xl font-light">Bora <em class="italic gold-text">engajar junto</em></h2>
+          </div>
+          <button onclick="goTo('aovivo')" class="text-sm flex items-center gap-1 hover:gap-2 transition-all" style="color: var(--gold);">Ver tudo <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5" id="home-aovivo"></div>
+      </div>
     </section>
 
     <!-- NETWORKING -->
@@ -547,6 +752,56 @@
           </div>
         </div>
         <div id="mapa-tooltip" class="mapa-tooltip"></div>
+      </div>
+    </section>
+
+    <!-- ENGAJAMENTO AO VIVO -->
+    <section id="tab-aovivo" class="tab-content hidden">
+      <div class="mb-6">
+        <div class="text-[11px] uppercase tracking-[0.3em] font-semibold mb-3 inline-flex items-center gap-2" style="color: #ef4444;">
+          <span class="live-dot"></span>
+          Engajamento ao vivo
+        </div>
+        <h1 class="font-display text-4xl md:text-6xl font-light leading-tight mb-3">Posta e <em class="italic gold-text">engaja junto</em></h1>
+        <p class="text-base max-w-2xl" style="color: var(--text-dim);">Compartilhe seus posts do Insta e veja todos os mentorados curtindo na hora. Posts ficam aqui por 24h.</p>
+      </div>
+
+      <!-- Banner de posts novos -->
+      <div id="live-banner-novos" class="live-banner hidden">
+        <div class="live-dot"></div>
+        <div class="flex-1 text-sm">
+          <strong style="color: #ef4444;" id="live-banner-count">0</strong>
+          <span style="color: var(--text-dim);"> <span id="live-banner-text">posts novos</span> nos últimos 30 minutos</span>
+        </div>
+      </div>
+
+      <!-- Card de compartilhar -->
+      <div class="compartilhar-card">
+        <div class="flex items-center gap-2 mb-3">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--gold);"><rect width="20" height="20" x="2" y="2" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><circle cx="17.5" cy="6.5" r=".5" fill="currentColor"/></svg>
+          <h3 class="font-display text-lg">Compartilhar meu post</h3>
+        </div>
+        <p class="text-xs mb-4" style="color: var(--text-dim);">Cola aqui o link do seu post/reels do Instagram e deixe os mentorados engajarem na hora.</p>
+        <div class="compartilhar-input-wrap">
+          <input id="compartilhar-input" type="url" placeholder="https://www.instagram.com/p/..." class="compartilhar-input">
+          <button id="compartilhar-btn" class="compartilhar-btn">Compartilhar</button>
+        </div>
+        <div id="compartilhar-msg" class="text-xs mt-2 hidden"></div>
+      </div>
+
+      <!-- Filtros -->
+      <div class="filtros-aovivo">
+        <button data-filtro-tempo="todos" class="filtro-aovivo active">Todos</button>
+        <button data-filtro-tempo="30min" class="filtro-aovivo">⚡ Últimos 30 min</button>
+        <button data-filtro-tempo="hoje" class="filtro-aovivo">Hoje</button>
+      </div>
+
+      <!-- Feed -->
+      <div id="aovivo-feed" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+      <div id="aovivo-vazio" class="hidden text-center py-16">
+        <div class="text-5xl mb-4">📭</div>
+        <h3 class="font-display text-xl mb-2">Nenhum post ainda</h3>
+        <p class="text-sm" style="color: var(--text-dim);">Seja o primeiro a compartilhar um post!</p>
       </div>
     </section>
 
@@ -715,7 +970,12 @@
         <div class="card p-8 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-40 h-40 rounded-full blur-3xl opacity-20" style="background: var(--gold);"></div>
           <div class="relative">
-            <div id="perfil-avatar" class="w-24 h-24 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-800 flex items-center justify-center font-display text-3xl mb-5">--</div>
+            <div id="perfil-avatar" class="w-24 h-24 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-800 flex items-center justify-center font-display text-3xl mb-3 overflow-hidden bg-cover bg-center">--</div>
+            <button id="btn-trocar-foto" class="text-[11px] uppercase tracking-widest font-semibold mb-5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full transition" style="background: rgba(212,165,55,0.15); color: var(--gold); border: 1px solid rgba(212,165,55,0.3);">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span id="btn-trocar-foto-texto">Trocar foto</span>
+            </button>
+            <input type="file" id="input-foto" accept="image/*" style="display:none;">
             <span id="perfil-badge" class="badge-esm text-[9px] uppercase tracking-wider px-2 py-0.5 rounded font-bold">--</span>
             <h2 class="font-display text-3xl font-light mt-2 mb-1" id="perfil-nome-full">Carregando...</h2>
             <div class="text-[10px] uppercase tracking-widest mb-6" id="perfil-nicho" style="color: var(--text-dim);">--</div>
@@ -795,7 +1055,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, getDoc, updateDoc, collection, getDocs, query, orderBy, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, getDoc, updateDoc, addDoc, deleteDoc, collection, getDocs, query, orderBy, where, serverTimestamp, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBth5GU8NsDj1-9s5-y2IomFCuMvxPZb3w",
@@ -921,7 +1181,16 @@ onAuthStateChanged(auth, async (user) => {
 function atualizarHeader() {
   const nome = userData.nome || "Mentorado";
   const inicial = nome.charAt(0).toUpperCase() + (nome.split(" ")[1]?.charAt(0).toUpperCase() || "");
-  $("user-avatar").textContent = inicial;
+  const avatarEl = $("user-avatar");
+  if (userData.fotoUrl) {
+    avatarEl.style.backgroundImage = `url("${userData.fotoUrl}")`;
+    avatarEl.style.backgroundSize = "cover";
+    avatarEl.style.backgroundPosition = "center";
+    avatarEl.textContent = "";
+  } else {
+    avatarEl.style.backgroundImage = "";
+    avatarEl.textContent = inicial;
+  }
   $("user-nome").textContent = nome;
   $("hero-nome").textContent = nome.split(" ")[0];
 
@@ -940,6 +1209,407 @@ function atualizarHeader() {
     sb.classList.remove("hidden");
     $("streak-num").textContent = streak;
   }
+}
+
+// ============ UPLOAD/COMPRESSÃO DE FOTO DE PERFIL ============
+// Comprime imagem pra base64 ~30-50KB e salva no Firestore
+async function comprimirImagem(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        // Redimensionar pra max 400x400 mantendo proporção
+        const maxSize = 400;
+        let { width, height } = img;
+        if (width > height) {
+          if (width > maxSize) { height = height * (maxSize / width); width = maxSize; }
+        } else {
+          if (height > maxSize) { width = width * (maxSize / height); height = maxSize; }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+        // Comprimir como JPEG quality 0.7 (~30-50KB típico)
+        const base64 = canvas.toDataURL("image/jpeg", 0.7);
+        resolve(base64);
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function salvarFotoMentorado(base64) {
+  if (!currentUser || isAdmin) return false;
+  try {
+    await updateDoc(doc(db, "mentorados", currentUser.uid), { fotoUrl: base64 });
+    userData.fotoUrl = base64;
+    // Atualiza UI
+    atualizarHeader();
+    renderPerfil();
+    // Atualiza também na lista de mentorados (cache local)
+    const idx = allMentorados.findIndex(m => m.id === currentUser.uid);
+    if (idx >= 0) allMentorados[idx].fotoUrl = base64;
+    return true;
+  } catch (e) {
+    console.error("Erro ao salvar foto:", e);
+    return false;
+  }
+}
+
+function setupUploadFoto() {
+  const btn = document.getElementById("btn-trocar-foto");
+  const input = document.getElementById("input-foto");
+  if (!btn || !input) return;
+
+  btn.addEventListener("click", () => input.click());
+
+  input.addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      alert("Escolhe uma imagem (JPG, PNG, etc.)");
+      return;
+    }
+    // Mostra loading no botão
+    const textoEl = document.getElementById("btn-trocar-foto-texto");
+    const textoOriginal = textoEl.textContent;
+    textoEl.textContent = "Salvando...";
+    btn.disabled = true;
+    try {
+      const base64 = await comprimirImagem(file);
+      const ok = await salvarFotoMentorado(base64);
+      if (ok) {
+        textoEl.textContent = "Trocar foto";
+      } else {
+        textoEl.textContent = textoOriginal;
+        alert("Erro ao salvar foto. Tenta de novo.");
+      }
+    } catch (err) {
+      console.error(err);
+      textoEl.textContent = textoOriginal;
+      alert("Erro ao processar imagem. Tenta outra foto.");
+    }
+    btn.disabled = false;
+    input.value = ""; // reset pra poder selecionar mesma foto de novo
+  });
+}
+
+// ============ ENGAJAMENTO AO VIVO ============
+let postsAoVivo = [];
+let filtroAoVivo = "todos";
+let aoVivoIntervalo = null;
+
+// Validar URL do Instagram
+function ehUrlInstagram(url) {
+  try {
+    const u = new URL(url);
+    if (!u.hostname.includes("instagram.com")) return false;
+    return /\/(p|reel|tv|reels)\//.test(u.pathname);
+  } catch { return false; }
+}
+
+// Buscar preview do post via microlink.io (free tier)
+async function buscarPreviewInsta(url) {
+  try {
+    const apiUrl = `https://api.microlink.io/?url=${encodeURIComponent(url)}`;
+    const resp = await fetch(apiUrl);
+    const data = await resp.json();
+    if (data.status === "success" && data.data) {
+      return {
+        imagem: data.data.image?.url || null,
+        titulo: data.data.title || "",
+        descricao: data.data.description || ""
+      };
+    }
+  } catch (e) {
+    console.warn("Erro ao buscar preview:", e);
+  }
+  return { imagem: null, titulo: "", descricao: "" };
+}
+
+// Compartilhar post
+async function compartilharPost(url) {
+  if (!currentUser) return false;
+  if (!ehUrlInstagram(url)) {
+    mostrarMsgCompartilhar("⚠️ Cola um link válido do Instagram (post, reel ou tv)", "erro");
+    return false;
+  }
+
+  const btn = $("compartilhar-btn");
+  btn.disabled = true;
+  btn.textContent = "Buscando...";
+
+  try {
+    const preview = await buscarPreviewInsta(url);
+    btn.textContent = "Salvando...";
+
+    await addDoc(collection(db, "posts"), {
+      url: url,
+      mentoradoId: currentUser.uid,
+      mentoradoNome: userData.nome || "Mentorado",
+      mentoradoFoto: userData.fotoUrl || null,
+      mentoradoNivel: userNivel || "gold",
+      mentoradoNicho: userData.nicho || "",
+      previewImagem: preview.imagem,
+      previewTitulo: preview.titulo,
+      previewDescricao: preview.descricao,
+      criadoEm: serverTimestamp()
+    });
+
+    $("compartilhar-input").value = "";
+    mostrarMsgCompartilhar("✅ Post compartilhado! Galera vai engajar.", "sucesso");
+    btn.textContent = "Compartilhar";
+    btn.disabled = false;
+
+    // Recarrega o feed
+    await carregarPostsAoVivo();
+    return true;
+  } catch (e) {
+    console.error("Erro compartilhar:", e);
+    mostrarMsgCompartilhar("⚠️ Erro ao compartilhar. Tenta de novo.", "erro");
+    btn.textContent = "Compartilhar";
+    btn.disabled = false;
+    return false;
+  }
+}
+
+function mostrarMsgCompartilhar(texto, tipo) {
+  const el = $("compartilhar-msg");
+  el.textContent = texto;
+  el.className = "text-xs mt-2";
+  el.style.color = tipo === "erro" ? "#fca5a5" : tipo === "sucesso" ? "#34d399" : "var(--text-dim)";
+  el.classList.remove("hidden");
+  setTimeout(() => el.classList.add("hidden"), 5000);
+}
+
+// Carregar posts do Firestore (últimos 24h)
+async function carregarPostsAoVivo() {
+  try {
+    const q = query(collection(db, "posts"), orderBy("criadoEm", "desc"));
+    const snap = await getDocs(q);
+    const agora = Date.now();
+    const limite24h = agora - (24 * 60 * 60 * 1000);
+
+    postsAoVivo = [];
+    const paraDeletar = [];
+
+    snap.forEach(d => {
+      const data = d.data();
+      const criadoMs = data.criadoEm?.toMillis ? data.criadoEm.toMillis() : Date.now();
+      // Posts mais antigos que 24h: marca pra deletar
+      if (criadoMs < limite24h) {
+        paraDeletar.push(d.id);
+      } else {
+        postsAoVivo.push({ id: d.id, ...data, criadoMs });
+      }
+    });
+
+    // Deleta posts antigos em background (não bloqueia UI)
+    paraDeletar.forEach(id => {
+      deleteDoc(doc(db, "posts", id)).catch(() => {});
+    });
+
+    renderPostsAoVivo();
+    atualizarBadgeAoVivo();
+    renderHomeAoVivo();
+  } catch (e) {
+    console.warn("Erro ao carregar posts:", e);
+  }
+}
+
+// Filtrar posts pela aba selecionada
+function filtrarPosts() {
+  const agora = Date.now();
+  let lista = [...postsAoVivo];
+  if (filtroAoVivo === "30min") {
+    lista = lista.filter(p => agora - p.criadoMs < 30 * 60 * 1000);
+  } else if (filtroAoVivo === "hoje") {
+    const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+    lista = lista.filter(p => p.criadoMs >= hoje.getTime());
+  }
+  return lista;
+}
+
+// "há X minutos"
+function tempoRelativo(ms) {
+  const diff = Date.now() - ms;
+  const min = Math.floor(diff / 60000);
+  if (min < 1) return "agora há pouco";
+  if (min < 60) return `há ${min} min`;
+  const h = Math.floor(min / 60);
+  if (h < 24) return `há ${h}h`;
+  return `há ${Math.floor(h/24)}d`;
+}
+
+// Renderizar feed
+function renderPostsAoVivo() {
+  const feed = $("aovivo-feed");
+  const vazio = $("aovivo-vazio");
+  if (!feed) return;
+
+  const lista = filtrarPosts();
+  if (lista.length === 0) {
+    feed.innerHTML = "";
+    vazio.classList.remove("hidden");
+    return;
+  }
+  vazio.classList.add("hidden");
+
+  feed.innerHTML = lista.map(p => {
+    const isNovo = (Date.now() - p.criadoMs) < 30 * 60 * 1000;
+    const tempo = tempoRelativo(p.criadoMs);
+    const inicial = (p.mentoradoNome || "?").charAt(0).toUpperCase() + ((p.mentoradoNome||"").split(" ")[1]?.charAt(0).toUpperCase() || "");
+    const avatarStyle = p.mentoradoFoto ? `background-image: url('${p.mentoradoFoto}'); background-color: transparent;` : "";
+    const avatarTxt = p.mentoradoFoto ? "" : inicial;
+
+    const nivelTxt = p.mentoradoNivel === "esmeralda" ? "Esmeralda" : p.mentoradoNivel === "filmmaker" ? "Filmmaker" : "Gold";
+    const nivelBadge = p.mentoradoNivel === "esmeralda" ? "esm" : p.mentoradoNivel === "filmmaker" ? "film" : "gold";
+
+    const imgHtml = p.previewImagem
+      ? `<div class="post-image" style="background-image: url('${p.previewImagem}');" onclick="window.open('${p.url}','_blank')">
+          <div class="post-image-overlay"><div class="insta-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="20" x="2" y="2" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><circle cx="17.5" cy="6.5" r=".5" fill="currentColor"/></svg>
+            Ver no Instagram
+          </div></div>
+        </div>`
+      : `<div class="post-image" onclick="window.open('${p.url}','_blank')" style="aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #f09433, #dc2743 60%, #bc1888);">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><rect width="20" height="20" x="2" y="2" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><circle cx="17.5" cy="6.5" r=".5" fill="white"/></svg>
+        </div>`;
+
+    return `
+      <article class="post-card">
+        <div class="post-header">
+          <div class="post-avatar" style="${avatarStyle}">${avatarTxt}</div>
+          <div class="post-meta">
+            <div class="post-author">${p.mentoradoNome}</div>
+            <div class="post-time">${tempo}${isNovo ? '<span class="new-tag">● NOVO</span>' : ''} · ${p.mentoradoNicho || nivelTxt}</div>
+          </div>
+          <span class="badge-${nivelBadge} text-[9px] uppercase tracking-wider px-2 py-0.5 rounded font-bold">${nivelTxt}</span>
+        </div>
+        ${imgHtml}
+        ${p.previewDescricao ? `<div class="post-caption">${p.previewDescricao.substring(0, 120)}${p.previewDescricao.length > 120 ? '...' : ''}</div>` : ''}
+        <div class="post-actions">
+          <a href="${p.url}" target="_blank" rel="noopener" class="post-action-btn primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            Curtir no Insta
+          </a>
+          <a href="${p.url}" target="_blank" rel="noopener" class="post-action-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Comentar
+          </a>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+// Card na home (3 últimos)
+function renderHomeAoVivo() {
+  const wrap = $("home-aovivo-wrap");
+  const cont = $("home-aovivo");
+  if (!wrap || !cont) return;
+
+  const ultimos = postsAoVivo.slice(0, 3);
+  if (ultimos.length === 0) {
+    wrap.classList.add("hidden");
+    return;
+  }
+  wrap.classList.remove("hidden");
+
+  cont.innerHTML = ultimos.map(p => {
+    const tempo = tempoRelativo(p.criadoMs);
+    const inicial = (p.mentoradoNome || "?").charAt(0).toUpperCase() + ((p.mentoradoNome||"").split(" ")[1]?.charAt(0).toUpperCase() || "");
+    const avatarStyle = p.mentoradoFoto ? `background-image: url('${p.mentoradoFoto}'); background-color: transparent;` : "";
+    const avatarTxt = p.mentoradoFoto ? "" : inicial;
+
+    const imgBg = p.previewImagem
+      ? `background-image: url('${p.previewImagem}'); background-size: cover; background-position: center;`
+      : `background: linear-gradient(135deg, #f09433, #dc2743 60%, #bc1888);`;
+
+    return `
+      <a href="${p.url}" target="_blank" rel="noopener" class="post-card block">
+        <div style="${imgBg} aspect-ratio: 1/1; cursor: pointer; ${!p.previewImagem ? 'display: flex; align-items: center; justify-content: center;' : ''}">
+          ${!p.previewImagem ? '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><rect width="20" height="20" x="2" y="2" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><circle cx="17.5" cy="6.5" r=".5" fill="white"/></svg>' : ''}
+        </div>
+        <div class="post-header">
+          <div class="post-avatar" style="${avatarStyle} width: 36px; height: 36px; font-size: 13px;">${avatarTxt}</div>
+          <div class="post-meta">
+            <div class="post-author" style="font-size: 13px;">${p.mentoradoNome}</div>
+            <div class="post-time">${tempo}</div>
+          </div>
+        </div>
+      </a>
+    `;
+  }).join("");
+}
+
+// Badge no menu
+function atualizarBadgeAoVivo() {
+  const badge = $("badge-aovivo");
+  const banner = $("live-banner-novos");
+  const bannerCount = $("live-banner-count");
+  const bannerText = $("live-banner-text");
+  if (!badge) return;
+
+  const agora = Date.now();
+  const ultimos30min = postsAoVivo.filter(p => agora - p.criadoMs < 30 * 60 * 1000);
+  const count = ultimos30min.length;
+
+  if (count > 0) {
+    badge.textContent = count;
+    badge.classList.remove("hidden");
+  } else {
+    badge.classList.add("hidden");
+  }
+
+  if (banner && bannerCount) {
+    if (count > 0) {
+      bannerCount.textContent = count;
+      bannerText.textContent = count === 1 ? "post novo" : "posts novos";
+      banner.classList.remove("hidden");
+    } else {
+      banner.classList.add("hidden");
+    }
+  }
+}
+
+// Setup interações da aba ao vivo
+function setupAoVivo() {
+  const btn = $("compartilhar-btn");
+  const input = $("compartilhar-input");
+  if (btn && input) {
+    btn.addEventListener("click", () => {
+      const url = input.value.trim();
+      if (url) compartilharPost(url);
+    });
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const url = input.value.trim();
+        if (url) compartilharPost(url);
+      }
+    });
+  }
+
+  document.querySelectorAll(".filtro-aovivo").forEach(b => {
+    b.addEventListener("click", () => {
+      document.querySelectorAll(".filtro-aovivo").forEach(x => x.classList.remove("active"));
+      b.classList.add("active");
+      filtroAoVivo = b.dataset.filtroTempo;
+      renderPostsAoVivo();
+    });
+  });
+
+  // Atualizar a cada 60s automaticamente
+  if (aoVivoIntervalo) clearInterval(aoVivoIntervalo);
+  aoVivoIntervalo = setInterval(() => {
+    carregarPostsAoVivo();
+  }, 60000);
 }
 
 // Verifica se usuário pode ver conteúdo de determinado nível
@@ -1244,6 +1914,9 @@ async function carregarDados() {
   renderMateriais();
   renderPerfil();
   setupCS();
+  setupUploadFoto();
+  setupAoVivo();
+  carregarPostsAoVivo();
 }
 
 async function carregarMarcelloMsg() {
@@ -1425,10 +2098,13 @@ function renderNetworking() {
     const inicial = (m.nome || "?").charAt(0).toUpperCase() + ((m.nome||"").split(" ")[1]?.charAt(0).toUpperCase() || "");
     const nivelTxt = m.nivel === "esmeralda" ? "Esmeralda" : m.nivel === "filmmaker" ? "Filmmaker" : "Gold";
     const badge = m.nivel === "esmeralda" ? "esm" : m.nivel === "filmmaker" ? "film" : "gold";
+    const avatarHtml = m.fotoUrl
+      ? `<div class="w-14 h-14 rounded-full bg-cover bg-center shrink-0" style="background-image: url('${m.fotoUrl}');"></div>`
+      : `<div class="w-14 h-14 rounded-full bg-gradient-to-br from-blue-400 to-blue-800 flex items-center justify-center font-display text-lg font-semibold text-white shrink-0">${inicial}</div>`;
     return `
       <article class="card p-6">
         <div class="flex items-start gap-4 mb-5">
-          <div class="w-14 h-14 rounded-full bg-gradient-to-br from-blue-400 to-blue-800 flex items-center justify-center font-display text-lg font-semibold text-white shrink-0">${inicial}</div>
+          ${avatarHtml}
           <div class="flex-1 min-w-0">
             <span class="badge-${badge} text-[9px] uppercase tracking-wider px-2 py-0.5 rounded font-bold">${nivelTxt}</span>
             <h3 class="font-display text-lg font-semibold leading-tight mt-1">${m.nome}</h3>
@@ -1686,7 +2362,19 @@ function renderPerfil() {
   const inicial = nome.charAt(0).toUpperCase() + (nome.split(" ")[1]?.charAt(0).toUpperCase() || "");
   $("perfil-nome").textContent = nome.split(" ")[0];
   $("perfil-nome-full").textContent = nome;
-  $("perfil-avatar").textContent = inicial;
+
+  // Avatar: foto se tiver, iniciais como fallback
+  const avatarEl = $("perfil-avatar");
+  if (userData.fotoUrl) {
+    avatarEl.style.backgroundImage = `url("${userData.fotoUrl}")`;
+    avatarEl.textContent = "";
+    $("btn-trocar-foto-texto").textContent = "Trocar foto";
+  } else {
+    avatarEl.style.backgroundImage = "";
+    avatarEl.textContent = inicial;
+    $("btn-trocar-foto-texto").textContent = "Adicionar foto";
+  }
+
   $("perfil-nicho").textContent = userData.nicho || "—";
 
   const nivelTxt = userNivel === "esmeralda" ? "Esmeralda" : userNivel === "filmmaker" ? "Filmmaker" : "Gold";
